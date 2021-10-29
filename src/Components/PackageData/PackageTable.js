@@ -1,58 +1,36 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import useAdminContexts from "../../Context/AdminContext";
 import { packagess } from "../../ReduxProvider/CounterSlice";
 
 
-const PackageTable = ({ fetchPackages }) => {
+const PackageTable = () => {
+  // TO UPDATE MODAL============
+  const {updateDynamicPackage, deletePackage} = useAdminContexts();
+
+  // TO OPEN MODAL============
   const EditPackageButton = useRef(null);
-  // const closeP = useRef(null);
+  // TO CLOSE MODAL============
+  const closeP = useRef(null);
+
+  // TO GET ALL PACKAGE
   const allPackages = useSelector(packagess)
 
+  // TO GET EDIT COMMISSION FIELD
+  const [editComm, setEditComm] = useState({commission: "",})
+  const [id, setId] = useState({_id: ""})
 
-  const deletePackage = async(id) =>{
-    try {
-      const response = await fetch(`http://localhost:5000/admindata/package/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
-      const json = await response.json();
-      if(json.message){
-        fetchPackages()
-      }
-      else{
-        console.log(json, "res")
-      }
-    } catch (error) {
-      console.log(error.message, "err");
-    }
+  const onChangeComm = (e) =>{
+    console.log(id);
+    setEditComm({...editComm, [e.target.name]: e.target.value})
+  }
+  
+  const editModal = (_id) =>{
+    EditPackageButton.current.click()
+    // eslint-disable-next-line
+    setId({["_id"]: _id})
   }
 
-  const updatePackage = async(id) =>{
-    // EditPackageButton.current.click()
-    // try {
-    //   const response = await fetch(`http://localhost:5000/admindata/package/update/${id}`, {
-    //     method: "PUT",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "auth-token": localStorage.getItem("token"),
-    //     },
-    //   });
-    //   const json = await response.json();
-    //   if(json.message){
-    //     fetchPackages()
-    //     closeP.current.click()
-
-    //   }
-    //   else{
-    //     console.log(json, "res")
-    //   }
-    // } catch (error) {
-    //   console.log(error.message, "err");
-    // }
-  }
 
 
   return (
@@ -63,7 +41,7 @@ const PackageTable = ({ fetchPackages }) => {
         data-toggle="modal"
         data-target="#editPackage"
       >
-        Edit Users
+        Edit Package
       </button>
 
       {/* Modal Content */}
@@ -75,18 +53,18 @@ const PackageTable = ({ fetchPackages }) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
+        {/* Modal Form */}
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Edit Package Commission
+                Edit Package
               </h5>
               <button
                 type="button"
                 className="close"
                 data-dismiss="modal"
                 aria-label="Close"
-                // ref={closeP}
               >
                 <span aria-hidden="true">×</span>
               </button>
@@ -94,14 +72,14 @@ const PackageTable = ({ fetchPackages }) => {
             <div className="modal-body">
               <form className="my-3">
                 <div className="mb-3">
-                  <label htmlFor="totalreturn" className="form-label">
-                    Commission Per Day
-                  </label>
+                  <label htmlFor="commission" className="form-label">Commission</label>
                   <input
                     type="number"
                     className="form-control"
-                    id="totalreturn"
-                    name="totalreturn"
+                    id="commission"
+                    name="commission"
+                    onChange={onChangeComm}
+                    value={editComm.commission}
                   />
                 </div>
               </form>
@@ -111,11 +89,12 @@ const PackageTable = ({ fetchPackages }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
+                ref={closeP}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
-                Save changes
+              <button disabled={editComm.commission.length>0 ? false : true} type="button" className="btn btn-primary" onClick={() => {updateDynamicPackage(closeP, id._id, editComm.commission)}}>
+                Edit Package
               </button>
             </div>
           </div>
@@ -132,7 +111,8 @@ const PackageTable = ({ fetchPackages }) => {
             <th className="text-center">Commission</th>
             <th className="text-center">Expiry in </th>
             <th className="text-center">Total ROI</th>
-            <th className="text-center">edit & delete</th>
+            <th className="text-center">edit</th>
+            <th className="text-center">delete</th>
           </tr>
         </thead>
         <tbody>
@@ -146,8 +126,10 @@ const PackageTable = ({ fetchPackages }) => {
                 <td className="text-center">{x.expireIn + " days"}</td>
                 <td className="text-center">{x.totalROI + "%"}</td>
                 <td className="text-center">
-                  <i className="fa fa-pencil" onClick={updatePackage(x._id)}/>
-                  <i className="fa fa-trash" onClick={deletePackage(x._id)}/>
+                  <i className="fa fa-pencil" onClick={()=>editModal(x._id)}/>
+                </td>
+                <td className="text-center">
+                  <i className="fa fa-trash" onClick={()=>deletePackage(x._id)}/>
                 </td>
               </tr>
             );

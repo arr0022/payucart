@@ -10,12 +10,11 @@ import PackageTable from "./PackageTable";
 
 
 const AddMorePackage = () => {
-  const {fetchPackages} = useAdminContexts();
+  const {fetchPackages, createDynamicPackage} = useAdminContexts();
   const allPackages = useSelector(packagess);
   const closeAddPackage = useRef(null);
   const [addPackage, setAddPackage] = useState({plan: "", dailyAds: "", commission:"",expireIn:"",totalROI:""}) ;
 
-  const Host = "http://localhost:5000";
 
 
   // FOR CHANGE
@@ -27,36 +26,14 @@ const AddMorePackage = () => {
   // FOR CREATE MESSAGE
   const createPackage = async(e) => {
     e.preventDefault();
-    try {
-      const temp = JSON.stringify({plan: addPackage.plan, dailyAds: addPackage.dailyAds, commission: addPackage.commission, expireIn: addPackage.expireIn, totalROI:addPackage.totalROI});
-
-    const response = await fetch(`${Host}/admindata/package`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem('token')
-      },
-      body: temp,
-    });
-    const json = await response.json();
-
-    if(json.message){
-      fetchPackages();
-      closeAddPackage.current.click();
-
-    }
-    else{
-      console.log(json, "res")
-    }
-    } catch (error) {
-      console.log(error.message)
-    }  
+    createDynamicPackage(closeAddPackage, addPackage.plan, addPackage.dailyAds, addPackage.commission, addPackage.expireIn, addPackage.totalROI)
   }
 
 
   useEffect(() => {
-    // eslint-disable-next-line
+    console.log("underPackage");
     fetchPackages()
+    // eslint-disable-next-line
   }, [])
 
   return (

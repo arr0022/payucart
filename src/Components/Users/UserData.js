@@ -1,23 +1,47 @@
 import React, { useRef, useState } from "react";
 import { allUserss } from "../../ReduxProvider/CounterSlice";
 import { useSelector } from "react-redux";
+import useAdminContexts from "../../Context/AdminContext";
 // import { AllUsers, FetchUsers } from "../../ReduxProvider/CounterSlice";
 // import UserDataTable from "./UserDataTable";
 
 const UserData = () => {
+  const ForEditCommission = useRef(null);
+  const closeUM = useRef(null);
+  const {updateUserComm} = useAdminContexts();
+  // const [filerArray, setFilerArray] = useState([])
+  
+  const users = useSelector(allUserss)
 
   //  const temp = useSelector(selectTemp)
-  const users = useSelector(allUserss)
+  const [editUserComm, setEditUserComm] = useState({commission: "",})
   
   // console.log("IN user data: ", users)
   const [status, setStatus] = useState("");
   const [plan, setPlan] = useState("");
+  const [uId, setUId] = useState({id: ""})
 
-  const ForEditCommission = useRef(null);
+  
 
-  const updateCommission = () => {
+  const onChangeUserComm = (e) =>{
+    console.log(uId);
+    setEditUserComm({...editUserComm, [e.target.name]: e.target.value})
+  }
+  
+
+  const updateCommission = (_id) => {
     ForEditCommission.current.click();
+    setUId({["id"]: _id});
   };
+  // const filterA = () =>{
+    
+  // }
+  // useEffect(() => {
+  //   const filter = users.filter(filterA)
+    
+  //   // setFilerArray(filter);
+    
+  // },[])
   
   return (
     <>
@@ -57,15 +81,15 @@ const UserData = () => {
             </div>
             <div className="modal-body">
               <form className="my-3">
-                <div className="mb-3">
-                  <label htmlFor="totalreturn" className="form-label">
-                    Commission Per Day
-                  </label>
+              <div className="mb-3">
+                  <label htmlFor="commission" className="form-label">Commission</label>
                   <input
                     type="number"
                     className="form-control"
-                    id="totalreturn"
-                    name="totalreturn"
+                    id="commission"
+                    name="commission"
+                    onChange={onChangeUserComm}
+                    value={editUserComm.commission}
                   />
                 </div>
               </form>
@@ -75,10 +99,13 @@ const UserData = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
+                ref={closeUM}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button type="button" className="btn btn-primary" disabled={editUserComm.commission.length>0 ? false : true}
+              onClick={() => {updateUserComm(closeUM, uId.id, editUserComm.commission)}}
+              >
                 Save changes
               </button>
             </div>
@@ -89,7 +116,8 @@ const UserData = () => {
       {/* User Data */}
       <div className="content">
         <div className="container-fluid">
-          <div className="row">
+          {/* fILTERS */}
+          {/* <div className="row">
             <div className="col-md-12">
               <div className="card">
                 <div className="header">
@@ -125,14 +153,6 @@ const UserData = () => {
                           onChange={(e) => setPlan(e.target.value)}
                         >
                           <option>Select Plan</option>
-
-                          {/* {User_Dat.map((x, index) => {
-                            return (
-                              <option key={index} value={x.status}>
-                                {x.status}
-                              </option>
-                            );
-                          })} */}
                         </select>
                       </div>
                     </div>
@@ -150,7 +170,8 @@ const UserData = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+          {/* USER CONTENT AND EDIT CONTENT */}
           <div className="row">
             <div className="col-md-12">
               <div className="card">
@@ -169,7 +190,7 @@ const UserData = () => {
                         <th className="text-center">Commission</th>
                         <th className="text-center">Date of Orgin</th>
                         <th className="text-center">Status</th>
-                        <th className="text-center">edit & delete</th>
+                        <th className="text-center">edit</th>
                       </tr>
                     </thead>
 
@@ -180,13 +201,13 @@ const UserData = () => {
                             <td className="text-center">{index + 1}</td>
                             <td className="text-center">{x.name}</td>
                             <td className="text-center">{x.mobile}</td>
-                            <td className="text-center">{x.plan || "None"}</td>
-                            <td className="text-center">{x.perDayAddLimit || "None"}</td>
-                            <td className="text-center">{x.perAdsIncome || "None"}</td>
+                            <td className="text-center">{x.plan}</td>
+                            <td className="text-center">{x.perDayAddLimit}</td>
+                            <td className="text-center">{x.commission}</td>
                             <td className="text-center">{x.date}</td>
-                            <td className="text-center">{x.status || "None" }</td>
+                            <td className="text-center">{x.status}</td>
                             <td className="text-center">
-                              <i className="fa fa-pencil" onClick={updateCommission}/>
+                              <i className="fa fa-pencil" onClick={() => {updateCommission(x._id)}}/>
                             </td>
                           </tr>
                         );

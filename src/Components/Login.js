@@ -1,33 +1,19 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
+import useAdminContexts from "../Context/AdminContext";
 // import "../../public/assets/css/bookcare.css"
 
-function Login() {
-  let history = useHistory();
+function Login({setDashboard}) {
+  const { ForLogin } = useAdminContexts();
   const [id, setId] = useState({ email: "", password: "" });
 
   const idp = (e) => {
     setId({ ...id, [e.target.name]: e.target.value }); //SPREAD OPERATOR(...)
   };
 
-  const ForLogin = async (e) => {
-    e.preventDefault();
-    const response = await fetch(`http://localhost:5000/auth/adminlogin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: id.email, password: id.password }),
-    });
-    const json = await response.json();
-    // await json.success===true?{setAlert.type(primary),}
-    if (json.success) {
-      localStorage.setItem("token", json.authtoken);
-      history.push("/dashboard");
-    } else {
-      alert("Invalid Credential");
-    }
+  const Login = async (e) => {
+    e.preventDefault(id.email, id.password, setDashboard );
+    ForLogin()
   };
 
   return (

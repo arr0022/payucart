@@ -6,6 +6,7 @@ export const counterSlice = createSlice({
   initialState: {
     allPackages: [],
     allUsers: [],
+    fetchBanners: [],
   },
 
   // The `reducers` field lets us define reducers and generate associated actions
@@ -25,6 +26,11 @@ export const counterSlice = createSlice({
       // console.log("in counterSlice allPackages" , state.allPackages)
     },
 
+    GetFrames: (state, action) => {
+      state.fetchBanners = action.payload
+      // console.log("in counterSlice allPackages" , state.allPackages)
+    },
+
     // // Use the PayloadAction type to declare the contents of `action.payload`
     // incrementByAmount: (state, action) => {
     //   state.value += action.payload;
@@ -33,10 +39,12 @@ export const counterSlice = createSlice({
 
 });
 
-export const { FetchUsers, GetPackages } = counterSlice.actions;
+export const { FetchUsers, GetPackages, GetFrames } = counterSlice.actions;
 
 export const packagess = (state) => state.counter.allPackages;
 
 export const allUserss = (state) => state.counter.allUsers;
+
+export const fetchBaners = (state) => state.counter.fetchBanners;
 
 export default counterSlice.reducer;
