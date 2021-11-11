@@ -3,17 +3,17 @@ import styled from "styled-components";
 import useAdminContexts from "../Context/AdminContext";
 // import "../../public/assets/css/bookcare.css"
 
-function Login({setDashboard}) {
-  const { ForLogin } = useAdminContexts();
+function Login() {
+  const { Login } = useAdminContexts();
   const [id, setId] = useState({ email: "", password: "" });
 
   const idp = (e) => {
     setId({ ...id, [e.target.name]: e.target.value }); //SPREAD OPERATOR(...)
   };
 
-  const Login = async (e) => {
-    e.preventDefault(id.email, id.password, setDashboard );
-    ForLogin()
+  const ForLogin = async (e) => {
+    e.preventDefault();
+    Login(id.email, id.password)
   };
 
   return (

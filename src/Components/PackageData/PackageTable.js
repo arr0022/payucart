@@ -13,6 +13,9 @@ const PackageTable = () => {
   // TO CLOSE MODAL============
   const closeP = useRef(null);
 
+  // TO CLOSE MODAL============
+  const clickp = useRef(null);
+
   // TO GET ALL PACKAGE
   const allPackages = useSelector(packagess)
 
@@ -31,7 +34,15 @@ const PackageTable = () => {
     setId({["_id"]: _id})
   }
 
-
+  const handlePSubmit =(e) =>{
+    e.preventDefault()
+    if(editComm.commission.length>0){
+      clickp.current.click();
+      setTimeout(() => {
+        setEditComm({commission: "",})
+      }, 1000);
+    }
+  }
 
   return (
     <>
@@ -70,7 +81,7 @@ const PackageTable = () => {
               </button>
             </div>
             <div className="modal-body">
-              <form className="my-3">
+              <form className="my-3" onSubmit={handlePSubmit}>
                 <div className="mb-3">
                   <label htmlFor="commission" className="form-label">Commission</label>
                   <input
@@ -93,7 +104,7 @@ const PackageTable = () => {
               >
                 Close
               </button>
-              <button disabled={editComm.commission.length>0 ? false : true} type="button" className="btn btn-primary" onClick={() => {updateDynamicPackage(closeP, id._id, editComm.commission)}}>
+              <button ref = {clickp} disabled={editComm.commission.length>0 ? false : true} type="button" className="btn btn-primary" onClick={() => {updateDynamicPackage(closeP, id._id, editComm.commission)}}>
                 Edit Package
               </button>
             </div>
@@ -122,7 +133,7 @@ const PackageTable = () => {
                 <td className="text-center">{index + 1}</td>
                 <td className="text-center">{x.plan}</td>
                 <td className="text-center">{x.dailyAds}</td>
-                <td className="text-center">{x.commission}</td>
+                <td className="text-center">{x.commission + " Rs"}</td>
                 <td className="text-center">{x.expireIn + " days"}</td>
                 <td className="text-center">{x.totalROI + "%"}</td>
                 <td className="text-center">

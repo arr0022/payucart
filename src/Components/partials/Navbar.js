@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import useAdminContexts from "../../Context/AdminContext";
 
 
 function Navbar({barOpen, setBarOpen, active}) {
+  const { setDashboard } = useAdminContexts();
+
   return (
     <>
       <nav className="navbar navbar-default navbar-fixed">
@@ -23,7 +26,7 @@ function Navbar({barOpen, setBarOpen, active}) {
             <Link className="navbar-brand" to="#">
               {active}
             </Link>
-            {/* // <p className="hidden-lg hidden-md">{active === "Dashboard" ? }</p> */}
+            {/* // <p className="hidden-lg hidden-mdnavbar">{active === "Dashboard" ? }</p> */}
           </div>
           <div className="collapse navbar-collapse">
             <ul className="nav navbar-nav navbar-left">
@@ -92,10 +95,13 @@ function Navbar({barOpen, setBarOpen, active}) {
                   </li>
                 </ul>
               </li>
-              <li>
-                <Link to="">
-                  <p>Log out</p>
-                </Link>
+              <li onClick={() => {
+                  localStorage.removeItem("token")
+                  setDashboard(true)
+                }}>
+                <a>
+                  <p>Logout</p>
+                </a>
               </li>
               <li className="separator hidden-lg" />
             </ul>

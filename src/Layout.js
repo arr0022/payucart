@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./Components/partials/Navbar";
 import Sidebar from "./Components/partials/Sidebar";
 
-const Layout = ({ children }) => {
+const Layout = ({ children}) => {
   const [active, setActive] = useState("Dashboard");
   const [barOpen, setBarOpen] = useState("false");
 

@@ -37,11 +37,11 @@ const Banner = () => {
                   <div className="card">
                     <Image>
                       <img
-                        src={`http://localhost:5000/banner/${x.bannerImage}`}
+                        src={`${x.bannerImage}`}
                         alt="not available"
                       />
                       <I>
-                        <i className="fa fa-trash" onClick={() => bannerDelete(x._id)}/>
+                        <i className="fa fa-trash" onClick={() => bannerDelete(x._id, x.bannerImage)}/>
                       </I>
                     </Image>
                   </div>
