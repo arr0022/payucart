@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import useAdminContexts from "../../Context/AdminContext";
 
-
-const Sidebar = ({active, setActive}) => {
+const Sidebar = ({ active, setActive }) => {
   return (
     <>
+
+      
+
       <div className="sidebar-wrapper">
         <div className="logo">
           <Link to="" className="simple-text">
@@ -42,15 +45,19 @@ const Sidebar = ({active, setActive}) => {
               <p>Banner</p>
             </Link>
           </li>
-          <li className={active === "Notifications" ? "active" : ""}>
-            <Link to="" onClick={(e) => setActive("Notifications")}>
+          {/* <li className={active === "Notifications" ? "active" : ""}>
+            <Link to=""
+              onClick={async (e) => {
+                sendNotificationToALl.current.click();
+                setActive("Notifications");
+              }}
+            >
               <i className="pe-7s-bell" />
               <p>Notifications</p>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
-
     </>
   );
 };

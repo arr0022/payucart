@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { allUserss, packagess } from "../../ReduxProvider/CounterSlice";
 import { useSelector } from "react-redux";
 import useAdminContexts from "../../Context/AdminContext";
@@ -11,8 +11,30 @@ const UserData = () => {
   const ForEditCommission = useRef(null);
   const sendNotification = useRef(null);
   const closeUM = useRef(null);
+  const closeM = useRef(null);
   const clickU = useRef(null);
-  const { updateUserComm, notificationApi } = useAdminContexts();
+  const sendNotificationToALl = useRef(null);
+  const closeAM = useRef(null);
+  const clickN = useRef(null);
+  const clickTN = useRef(null);
+  const {
+    updateUserComm,
+    notificationApi,
+    PageNo,
+    setPageNo,
+    condition,
+    setCondition,
+    fetchAllUsers,
+    notificationToAll,
+  } = useAdminContexts();
+  const onChangeNotification_To_All = (e) => {
+    // console.log(uId);
+    setNotification_To_All({
+      ...notification_To_All,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   // const [filerArray, setFilerArray] = useState([])
 
   const users = useSelector(allUserss);
@@ -21,20 +43,18 @@ const UserData = () => {
   //  const temp = useSelector(selectTemp)
   const [editUserComm, setEditUserComm] = useState({ commission: "" });
   const [notification, setNotification] = useState({ title: "", text: "" });
-  const [PageNo, setPageNo] = useState({
-    documents: users.length || 1,
-    page: 1,
-    perPage: 5,
+  const [notification_To_All, setNotification_To_All] = useState({
+    title: "",
+    text: "",
   });
   // console.log("IN user data: ", users)
-  const [status, setStatus] = useState("");
-  const [plan, setPlan] = useState("");
   const [uId, setUId] = useState({ id: "" });
 
   const onChangeUserComm = (e) => {
     // console.log(uId);
     setEditUserComm({ ...editUserComm, [e.target.name]: e.target.value });
   };
+
   const onChangeNotification = (e) => {
     // console.log(uId);
     setNotification({ ...notification, [e.target.name]: e.target.value });
@@ -44,9 +64,26 @@ const UserData = () => {
     ForEditCommission.current.click();
     setUId({ ["id"]: _id });
   };
+
+  const OnstatusCodition = async (e) => {
+    let value = await e.target.value;
+    if (value === "Select Status") {
+      setCondition({ ...condition, ["status"]: "" });
+    } else {
+      setCondition({ ...condition, ["status"]: value });
+    }
+    fetchAllUsers();
+  };
+
   const sendNotifications = (_id) => {
     sendNotification.current.click();
     setUId({ ["id"]: _id });
+  };
+
+  const OnplanCodition = async (e) => {
+    let a = await parseInt(e.target.value);
+    let n = (await a) || 0;
+    setCondition({ ...condition, ["plan"]: n });
   };
 
   const handleSubmit = (e) => {
@@ -56,6 +93,31 @@ const UserData = () => {
     }
   };
 
+  const handleSubmitForNotification = (e) => {
+    e.preventDefault();
+    if (notification.text.length > 0) {
+      clickN.current.click();
+    }
+  };
+
+  const handleSubmitNotification_To_All = (e) => {
+    e.preventDefault();
+    if (notification_To_All.text.length > 0) {
+      clickTN.current.click();
+    }
+  };
+
+  const handlePage = (e, n) => {
+    e.preventDefault();
+    setPageNo({ ...PageNo, ["page"]: PageNo.page + n });
+  };
+
+  // console.log(condition);
+  // console.log(PageNo);
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, [PageNo, condition]);
   // const cc = users.find(users.status == "active");
 
   return (
@@ -79,6 +141,17 @@ const UserData = () => {
         data-target="#notification"
       >
         Push Notification
+      </button>
+
+      {/* Modal Button For Notification to all*/}
+      <button
+        ref={sendNotificationToALl}
+        type="button"
+        className="btn btn-primary d-none"
+        data-toggle="modal"
+        data-target="#notification_To_All"
+      >
+        Push Notification to all
       </button>
 
       {/* Modal Content For Commission*/}
@@ -185,7 +258,7 @@ const UserData = () => {
               <form
                 className="my-3"
                 onSubmit={(e) => {
-                  handleSubmit(e);
+                  handleSubmitForNotification(e);
                 }}
               >
                 <div className="mb-3">
@@ -221,17 +294,22 @@ const UserData = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
-                ref={closeUM}
+                ref={closeM}
               >
                 Close
               </button>
               <button
                 type="button"
                 className="btn btn-primary"
-                ref={clickU}
+                ref={clickN}
                 disabled={notification.text.length > 0 ? false : true}
                 onClick={async () => {
-                  await notificationApi(closeUM, uId.id, notification);
+                  await notificationApi(
+                    closeM,
+                    uId.id,
+                    notification,
+                    setNotification
+                  );
                   setEditUserComm({ commission: "" });
                 }}
               >
@@ -241,6 +319,95 @@ const UserData = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Content For Notification to all*/}
+      <div
+        className="modal fade"
+        id="notification_To_All"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                For Notification To ALl
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="my-3"
+                onSubmit={(e) => {
+                  handleSubmitNotification_To_All(e);
+                }}
+              >
+                <div className="mb-3">
+                  <label htmlFor="title" className="form-label">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="title"
+                    name="title"
+                    onChange={onChangeNotification_To_All}
+                    value={notification_To_All.title}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="text" className="form-label">
+                    Message
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="text"
+                    name="text"
+                    onChange={onChangeNotification_To_All}
+                    value={notification_To_All.text}
+                  />
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                ref={closeAM}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                ref={clickTN}
+                disabled={notification_To_All.text.length > 0 ? false : true}
+                onClick={async () => {
+                  await notificationToAll(
+                    closeAM,
+                    notification_To_All,
+                    setNotification_To_All
+                  );
+                }}
+              >
+                Send Notification
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* User Data */}
       <div className="content">
         <div className="container-fluid">
@@ -252,23 +419,23 @@ const UserData = () => {
                   <h4 className="title">Filters</h4>
                 </div>
                 <div className="content">
-                  <div className="row">
-                    <div className="col-md-3 col-xl-3 col-sm-6">
+                  <DIV className="row">
+                    {/* <div className="col-md-3 col-xl-3 col-sm-6">
                       <div className="ml-xl-4 mt-3">
                         <input type="date" className="form-control" />
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-md-3 col-xl-3 col-sm-6">
                       <div className="ml-xl-4 mt-3">
                         <select
                           className="form-control"
-                          value={status}
-                          onChange={(e) => setStatus(e.target.value)}
+                          value={condition.status}
+                          onChange={(e) => OnstatusCodition(e)}
                         >
-                          <option>Select status</option>
-                          <option>Active</option>
-                          <option>Deactive</option>
+                          <option>Select Status</option>
+                          <option>active</option>
+                          <option>InActive</option>
                         </select>
                       </div>
                     </div>
@@ -278,8 +445,8 @@ const UserData = () => {
                         {packages.length > 0 ? (
                           <select
                             className="form-control"
-                            value={plan}
-                            onChange={(e) => setPlan(e.target.value)}
+                            value={condition.plan}
+                            onChange={(e) => OnplanCodition(e)}
                           >
                             <option>Select Plan</option>
                             {packages.map((x, n) => (
@@ -294,7 +461,7 @@ const UserData = () => {
                       </div>
                     </div>
 
-                    <div className="col-md-3 col-xl-3 col-sm-6">
+                    {/* <div className="col-md-3 col-xl-3 col-sm-6">
                       <div className="ml-xl-4 mt-3">
                         <input
                           type="text"
@@ -302,13 +469,13 @@ const UserData = () => {
                           placeholder="Search By User Name"
                         />
                       </div>
-                    </div>
-                  </div>
+                    </div> */}
+                  </DIV>
                 </div>
               </div>
             </div>
           </div>
-          {/* USER CONTENT AND EDIT CONTENT */}
+          {/* USER CONTENT AND EDIT CONTENT */} {/* Pagination */}
           <div className="row">
             <div className="col-md-12">
               <div className="card">
@@ -367,6 +534,10 @@ const UserData = () => {
                                     sendNotifications(x._id);
                                   }}
                                 >
+                                  <i
+                                    className="fa fa-paper-plane"
+                                    aria-hidden="true"
+                                  ></i>
                                   Click here
                                 </Button>
                               </td>
@@ -380,16 +551,42 @@ const UserData = () => {
                   )}
                 </div>
                 <Pagination>
-                  <button type="button" className="btn btn-primary" disabled={PageNo.page<=1}>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={PageNo.page <= 1}
+                    onClick={(e) => handlePage(e, -1)}
+                  >
                     prev
                   </button>
                   <p>Page-{PageNo.page}</p>
-                  <button type="button" className="btn btn-primary" disabled={PageNo.page*PageNo.perPage >= PageNo.documents}>next</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={PageNo.page * PageNo.perPage >= PageNo.documents}
+                    onClick={(e) => handlePage(e, +1)}
+                  >
+                    next
+                  </button>
                 </Pagination>
               </div>
             </div>
           </div>
-          {/* Pagination */}
+          <div className="row">
+            <div className="col-md-12">
+              <PushButton>
+                <button
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    sendNotificationToALl.current.click();
+                  }}
+                >
+                  <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                  Push Notification To All
+                </button>
+              </PushButton>
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -403,6 +600,11 @@ const Button = styled.button`
   background-color: white;
   /* border-radius: ; */
 `;
+const DIV = styled.div`
+  display: flex;
+  justify-content: space-between;
+  /* border-radius: ; */
+`;
 const Pagination = styled.div`
   margin: 10px 1%;
   padding-bottom: 10px;
@@ -410,11 +612,26 @@ const Pagination = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
   button {
     border-radius: 40%;
     border: none;
-    background-color: wheat;
+    color: black;
+  }
+  p {
+    margin: 0;
   }
 
   /* border-radius: ; */
 `;
+
+const PushButton = styled.div`
+  display: flex;
+  justify-content: center;
+  button{
+    background-color: #efeff2;
+    border: none;
+    padding: 20px;
+    border-radius: 55%;
+  }
+`

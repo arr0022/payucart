@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Dashboard from "./Components/Dashboard";
 import UserData from "./Components/Users/UserData";
 import Banner from "./Components/Banner";
@@ -12,7 +12,6 @@ import useAdminContexts from "./Context/AdminContext";
 
 function App() {
   const { dashboard, validator} = useAdminContexts();
-
 
   useEffect(() => {
     validator();

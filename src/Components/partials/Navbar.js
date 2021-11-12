@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import useAdminContexts from "../../Context/AdminContext";
+import styled from "styled-components";
 
-
-function Navbar({barOpen, setBarOpen, active}) {
+function Navbar({ barOpen, setBarOpen, active }) {
   const { setDashboard } = useAdminContexts();
 
   return (
@@ -29,7 +29,7 @@ function Navbar({barOpen, setBarOpen, active}) {
             {/* // <p className="hidden-lg hidden-mdnavbar">{active === "Dashboard" ? }</p> */}
           </div>
           <div className="collapse navbar-collapse">
-            <ul className="nav navbar-nav navbar-left">
+            {/* <ul className="nav navbar-nav navbar-left">
               <li>
                 <Link to="#" className="dropdown-toggle" data-toggle="dropdown">
                   <i className="fa fa-dashboard" />
@@ -66,15 +66,15 @@ function Navbar({barOpen, setBarOpen, active}) {
                   </li>
                 </ul>
               </li>
-              {/* <li>
-                    <Link href>
-                      <i className="fa fa-search" />
-                      <p className="hidden-lg hidden-md">Search</p>
-                    </Link>
-                  </li> */}
-            </ul>
-            <ul className="nav navbar-nav navbar-right">
               <li>
+                <Link href>
+                  <i className="fa fa-search" />
+                  <p className="hidden-lg hidden-md">Search</p>
+                </Link>
+              </li>
+            </ul> */}
+            <UL className="nav navbar-nav navbar-right">
+              {/* <li>
                 <Link to="/">
                   <p>Account</p>
                 </Link>
@@ -94,17 +94,22 @@ function Navbar({barOpen, setBarOpen, active}) {
                     <Link to="">Another action</Link>
                   </li>
                 </ul>
-              </li>
-              <li onClick={() => {
-                  localStorage.removeItem("token")
-                  setDashboard(true)
-                }}>
-                <a>
-                  <p>Logout</p>
-                </a>
-              </li>
+              </li> */}
+              <LI>
+                <Link to="/">
+                  <p
+                    className="hr"
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      setDashboard(true);
+                    }}
+                  >
+                    Logout
+                  </p>
+                </Link>
+              </LI>
               <li className="separator hidden-lg" />
-            </ul>
+            </UL>
           </div>
         </div>
       </nav>
@@ -113,3 +118,13 @@ function Navbar({barOpen, setBarOpen, active}) {
 }
 
 export default Navbar;
+
+const LI = styled.li`
+  cursor: pointer;
+`;
+
+const UL = styled.ul`
+  @media (max-width: 992px){
+    display: none;
+  }
+`;

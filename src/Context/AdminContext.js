@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import {
   FetchUsers,
   GetPackages,
@@ -11,9 +11,16 @@ export const AdminContext = createContext();
 export const AdminState = ({ children }) => {
   // const [pack, setPack] = useState();
   const [dashboard, setDashboard] = useState(true);
-
+  const [PageNo, setPageNo] = useState({
+    documents: 1,
+    page: 1,
+    perPage: 5,
+  });
+  const [condition, setCondition] = useState({ status: "", plan: "" });
   const host = "http://localhost:5000";
   const dispatch = useDispatch();
+
+
 
   // FetchPackages
   const fetchPackages = async () => {
@@ -35,16 +42,26 @@ export const AdminState = ({ children }) => {
   // FetchUsers
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch(`${host}/admindata/allUsers`, {
-        method: "GET",
+      // console.log(PageNo)
+      let temp = JSON.stringify({
+        condition,
+        PageNo,
+      });
+      const response = await fetch(`${host}/admindata/allUserss`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "auth-token": localStorage.getItem("token"),
         },
+        body: temp,
       });
       const json = await response.json();
-      if (json.Users) {
-        dispatch(FetchUsers(json.Users));
+      if (json) {
+        if(json.documents !== PageNo.documents){
+          setPageNo({ ...PageNo, ["documents"]: json.documents });
+        }
+        // console.log(json);
+        dispatch(FetchUsers(json.data));
       }
     } catch (error) {
       console.log(error.message);
@@ -95,7 +112,7 @@ export const AdminState = ({ children }) => {
     try {
       let temp = JSON.stringify({ commission });
       const response = await fetch(
-        `http://localhost:5000/admindata/package/update/${ids}`,
+        `${host}/admindata/package/update/${ids}`,
         {
           method: "PUT",
           headers: {
@@ -121,7 +138,7 @@ export const AdminState = ({ children }) => {
   const deletePackage = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/admindata/package/delete/${id}`,
+        `${host}/admindata/package/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -144,9 +161,9 @@ export const AdminState = ({ children }) => {
   //   EDIT USER
   const updateUserComm = async (closeUM, id, commission) => {
     try {
-      let temp = JSON.stringify({ commission });
+      let temp = JSON.stringify({commission});
       const response = await fetch(
-        `http://localhost:5000/admindata/user/update/${id}`,
+        `${host}/admindata/user/update/${id}`,
         {
           method: "PUT",
           headers: {
@@ -158,8 +175,8 @@ export const AdminState = ({ children }) => {
       );
       const json = await response.json();
       if (json.message) {
-        fetchAllUsers();
         closeUM.current.click();
+        fetchAllUsers();
       } else {
         console.log(json, "res");
       }
@@ -175,7 +192,7 @@ export const AdminState = ({ children }) => {
       formData.append("img", imgs[i]);
     }
     try {
-      const response = await fetch(`http://localhost:5000/admindata/banner`, {
+      const response = await fetch(`${host}/admindata/banner`, {
         method: "POST",
         headers: {
           "auth-token": localStorage.getItem("token"),
@@ -257,7 +274,7 @@ export const AdminState = ({ children }) => {
     }
   };
 
-  const notificationApi = async (closeUM, id, notification) => {
+const notificationApi = async (closeM, id, notification, setNotification) => {
     try {
       let temp = JSON.stringify(notification);
       const response = await fetch(`${host}/admindata/notification/${id}`, {
@@ -270,8 +287,32 @@ export const AdminState = ({ children }) => {
       });
       const json = await response.json();
       if (json.notification) {
-        closeUM.current.click();
-        alert("successful");
+        closeM.current.click();
+        setNotification({ title: "", text: "" })
+      } else {
+        console.log(json, "res");
+        alert("error");
+      }
+    } catch (error) {
+      console.log(error.message, "err");
+    }
+  };
+
+const notificationToAll = async (closeAM, notification_To_All, setNotification_To_All) => {
+    try {
+      let temp = JSON.stringify(notification_To_All);
+      const response = await fetch(`${host}/admindata/notificationtoall`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: temp,
+      });
+      const json = await response.json();
+      if (json.notification) {
+        closeAM.current.click();
+        setNotification_To_All({ title: "", text: "" })
       } else {
         console.log(json, "res");
         alert("error");
@@ -296,7 +337,7 @@ export const AdminState = ({ children }) => {
         if (response.data.message) {
           await fetchAllUsers();
           await fetchPackages();
-          await setDashboard(false)
+          await setDashboard(false);
           return;
         } else {
           setDashboard(true);
@@ -307,7 +348,7 @@ export const AdminState = ({ children }) => {
         return;
       }
     } catch (error) {
-      setDashboard(true)
+      setDashboard(true);
       console.log(error);
       return;
     }
@@ -330,6 +371,10 @@ export const AdminState = ({ children }) => {
         Login,
         notificationApi,
         validator,
+        PageNo,
+        setPageNo,
+        condition,
+        setCondition,
       }}
     >
       {children}
