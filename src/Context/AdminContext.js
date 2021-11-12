@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   FetchUsers,
   GetPackages,
@@ -17,10 +17,9 @@ export const AdminState = ({ children }) => {
     perPage: 5,
   });
   const [condition, setCondition] = useState({ status: "", plan: "" });
+  const [active, setActive] = useState({ active: "", Inactive: "" });
   const host = "http://localhost:5000";
   const dispatch = useDispatch();
-
-
 
   // FetchPackages
   const fetchPackages = async () => {
@@ -57,7 +56,7 @@ export const AdminState = ({ children }) => {
       });
       const json = await response.json();
       if (json) {
-        if(json.documents !== PageNo.documents){
+        if (json.documents !== PageNo.documents) {
           setPageNo({ ...PageNo, ["documents"]: json.documents });
         }
         // console.log(json);
@@ -111,17 +110,14 @@ export const AdminState = ({ children }) => {
   const updateDynamicPackage = async (closeP, ids, commission) => {
     try {
       let temp = JSON.stringify({ commission });
-      const response = await fetch(
-        `${host}/admindata/package/update/${ids}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": localStorage.getItem("token"),
-          },
-          body: temp,
-        }
-      );
+      const response = await fetch(`${host}/admindata/package/update/${ids}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: temp,
+      });
       const json = await response.json();
       if (json.message) {
         fetchPackages();
@@ -137,16 +133,13 @@ export const AdminState = ({ children }) => {
   //   DELETE PACKAGE
   const deletePackage = async (id) => {
     try {
-      const response = await fetch(
-        `${host}/admindata/package/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": localStorage.getItem("token"),
-          },
-        }
-      );
+      const response = await fetch(`${host}/admindata/package/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+      });
       const json = await response.json();
       if (json.message) {
         fetchPackages();
@@ -161,18 +154,15 @@ export const AdminState = ({ children }) => {
   //   EDIT USER
   const updateUserComm = async (closeUM, id, commission) => {
     try {
-      let temp = JSON.stringify({commission});
-      const response = await fetch(
-        `${host}/admindata/user/update/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": localStorage.getItem("token"),
-          },
-          body: temp,
-        }
-      );
+      let temp = JSON.stringify({ commission });
+      const response = await fetch(`${host}/admindata/user/update/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: temp,
+      });
       const json = await response.json();
       if (json.message) {
         closeUM.current.click();
@@ -274,7 +264,7 @@ export const AdminState = ({ children }) => {
     }
   };
 
-const notificationApi = async (closeM, id, notification, setNotification) => {
+  const notificationApi = async (closeM, id, notification, setNotification) => {
     try {
       let temp = JSON.stringify(notification);
       const response = await fetch(`${host}/admindata/notification/${id}`, {
@@ -288,7 +278,7 @@ const notificationApi = async (closeM, id, notification, setNotification) => {
       const json = await response.json();
       if (json.notification) {
         closeM.current.click();
-        setNotification({ title: "", text: "" })
+        setNotification({ title: "", text: "" });
       } else {
         console.log(json, "res");
         alert("error");
@@ -298,7 +288,11 @@ const notificationApi = async (closeM, id, notification, setNotification) => {
     }
   };
 
-const notificationToAll = async (closeAM, notification_To_All, setNotification_To_All) => {
+  const notificationToAll = async (
+    closeAM,
+    notification_To_All,
+    setNotification_To_All
+  ) => {
     try {
       let temp = JSON.stringify(notification_To_All);
       const response = await fetch(`${host}/admindata/notificationtoall`, {
@@ -312,7 +306,7 @@ const notificationToAll = async (closeAM, notification_To_All, setNotification_T
       const json = await response.json();
       if (json.notification) {
         closeAM.current.click();
-        setNotification_To_All({ title: "", text: "" })
+        setNotification_To_All({ title: "", text: "" });
       } else {
         console.log(json, "res");
         alert("error");
@@ -325,6 +319,7 @@ const notificationToAll = async (closeAM, notification_To_All, setNotification_T
   const validator = async () => {
     try {
       if (localStorage.getItem("token")) {
+        // let temp = JSON.stringify("notification_To_All");
         const response = await axios.post(
           `${host}/admindata/validator`,
           {},
@@ -335,10 +330,16 @@ const notificationToAll = async (closeAM, notification_To_All, setNotification_T
           }
         );
         if (response.data.message) {
+          setActive({
+            ...active,
+            ["active"]: response.data.active,
+            ["InActive"]: response.data.InActive,
+          });
+          // console.log(response.data.active, "response.data.active")
+          // console.log(response.data.InActive, "response.data.InActive")
           await fetchAllUsers();
           await fetchPackages();
           await setDashboard(false);
-          return;
         } else {
           setDashboard(true);
           return;
@@ -375,6 +376,8 @@ const notificationToAll = async (closeAM, notification_To_All, setNotification_T
         setPageNo,
         condition,
         setCondition,
+        notificationToAll,
+        active,
       }}
     >
       {children}

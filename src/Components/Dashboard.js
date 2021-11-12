@@ -3,15 +3,16 @@ import { Bar } from "react-chartjs-2";
 import { Line } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
 import styled from "styled-components";
-
+import useAdminContexts from "../Context/AdminContext";
 
 const Dashboard = () => {
+  const { active } = useAdminContexts();
   const CombineData = {
     labels: ["Active", "InActive"],
     datasets: [
       {
         label: "Test2",
-        data: [50, 11],
+        data: [active.active, active.InActive],
         backgroundColor: ["rgba(106, 151, 234, 1)", "rgba(50, 218, 209, 1)"],
         borderColor: ["rgba(106, 151, 234, 1)", "rgba(50, 218, 209, 1)"],
         // borderWidth: 0.3
