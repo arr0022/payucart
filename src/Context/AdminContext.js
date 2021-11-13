@@ -18,7 +18,7 @@ export const AdminState = ({ children }) => {
   });
   const [condition, setCondition] = useState({ status: "", plan: "" });
   const [active, setActive] = useState({ active: "", Inactive: "" });
-  const host = "http://localhost:5000";
+  const host = "http://51a4-122-160-47-222.ngrok.io";
   const dispatch = useDispatch();
 
   // FetchPackages
@@ -320,8 +320,7 @@ export const AdminState = ({ children }) => {
     try {
       if (localStorage.getItem("token")) {
         // let temp = JSON.stringify("notification_To_All");
-        const response = await axios.post(
-          `${host}/admindata/validator`,
+        const response = await axios.post(`${host}/admindata/validator`,
           {},
           {
             headers: {
@@ -330,16 +329,14 @@ export const AdminState = ({ children }) => {
           }
         );
         if (response.data.message) {
+          await setDashboard(false);
           setActive({
             ...active,
             ["active"]: response.data.active,
             ["InActive"]: response.data.InActive,
           });
-          // console.log(response.data.active, "response.data.active")
-          // console.log(response.data.InActive, "response.data.InActive")
           await fetchAllUsers();
           await fetchPackages();
-          await setDashboard(false);
         } else {
           setDashboard(true);
           return;

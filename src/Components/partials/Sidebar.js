@@ -1,13 +1,10 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import useAdminContexts from "../../Context/AdminContext";
+// import useAdminContexts from "../../Context/AdminContext";
 
 const Sidebar = ({ active, setActive }) => {
   return (
     <>
-
-      
-
       <div className="sidebar-wrapper">
         <div className="logo">
           <Link to="" className="simple-text">
