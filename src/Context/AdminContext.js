@@ -18,7 +18,7 @@ export const AdminState = ({ children }) => {
   });
   const [condition, setCondition] = useState({ status: "", plan: "" });
   const [active, setActive] = useState({ active: "", Inactive: "" });
-  const host = "http://51a4-122-160-47-222.ngrok.io";
+  const host = "http://51eb-47-31-227-119.ngrok.io";
   const dispatch = useDispatch();
 
   // FetchPackages
@@ -32,7 +32,7 @@ export const AdminState = ({ children }) => {
         },
       });
       const json = await response.json();
-      dispatch(GetPackages(json.packagess));
+      // dispatch(GetPackages(json.packagess));
     } catch (error) {
       console.log(error.message);
     }

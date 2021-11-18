@@ -333,7 +333,7 @@ const UserData = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                For Notification To ALl
+                For Notification To ALL
               </h5>
               <button
                 type="button"

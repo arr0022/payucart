@@ -9,6 +9,7 @@ import Layout from "./Layout";
 import { useEffect } from "react";
 import AddMorePackage from "./Components/PackageData/AddMorePackage";
 import useAdminContexts from "./Context/AdminContext";
+import Landing from "./Components/Landing page/Landing";
 
 function App() {
   const { dashboard, validator} = useAdminContexts();
@@ -23,11 +24,11 @@ function App() {
       {dashboard ? (
         <Router>
           <Switch>
-            <Route path="/login">
+            <Route path="/admin">
               <Login/>
             </Route>
             <Route path="/">
-              <Login/>
+              <Landing/>
             </Route>
           </Switch>
         </Router>

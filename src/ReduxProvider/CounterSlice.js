@@ -11,10 +11,6 @@ export const counterSlice = createSlice({
 
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-   
-    Validate: async (state) =>{
-        
-    },
 
     FetchUsers: (state, action) => {
       state.allUsers = action.payload
