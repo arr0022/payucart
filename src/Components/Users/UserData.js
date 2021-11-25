@@ -11,6 +11,7 @@ const UserData = () => {
   const ForEditCommission = useRef(null);
   const sendNotification = useRef(null);
   const closeUM = useRef(null);
+  const closeR = useRef(null);
   const closeM = useRef(null);
   const clickU = useRef(null);
   const sendNotificationToALl = useRef(null);
@@ -26,6 +27,8 @@ const UserData = () => {
     setCondition,
     fetchAllUsers,
     notificationToAll,
+    refer,
+    editrefer,
   } = useAdminContexts();
   const onChangeNotification_To_All = (e) => {
     // console.log(uId);
@@ -42,6 +45,7 @@ const UserData = () => {
 
   //  const temp = useSelector(selectTemp)
   const [editUserComm, setEditUserComm] = useState({ commission: "" });
+  const [editRefer, setEditRefer] = useState({ refer: "" });
   const [notification, setNotification] = useState({ title: "", text: "" });
   const [notification_To_All, setNotification_To_All] = useState({
     title: "",
@@ -110,6 +114,16 @@ const UserData = () => {
   const handlePage = (e, n) => {
     e.preventDefault();
     setPageNo({ ...PageNo, ["page"]: PageNo.page + n });
+  };
+
+  const referSubmit = (e) => {
+    e.preventDefault();
+    editrefer(editRefer, closeR);
+  };
+
+  const onChangeRefer = (e) => {
+    // console.log(uId);
+    setEditRefer({ ...editRefer, [e.target.name]: e.target.value });
   };
 
   // console.log(condition);
@@ -407,6 +421,72 @@ const UserData = () => {
           </div>
         </div>
       </div>
+      {/* modal for edit refer amount */}
+      <div
+        className="modal fade"
+        id="editRefer"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Edit Refer Amount
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                ref={closeR}
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="my-3"
+                onSubmit={(e) => {
+                  referSubmit(e);
+                }}
+              >
+                <div className="mb-3">
+                  <label htmlFor="refer" className="form-label">
+                    Refer Amount
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="refer"
+                    name="refer"
+                    onChange={onChangeRefer}
+                    value={editRefer.refer}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={editRefer.refer.length > 0 ? false : true}
+                  >
+                    Save changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* User Data */}
       <div className="content">
@@ -460,16 +540,6 @@ const UserData = () => {
                         )}
                       </div>
                     </div>
-
-                    {/* <div className="col-md-3 col-xl-3 col-sm-6">
-                      <div className="ml-xl-4 mt-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search By User Name"
-                        />
-                      </div>
-                    </div> */}
                   </DIV>
                 </div>
               </div>
@@ -576,6 +646,8 @@ const UserData = () => {
             <div className="col-md-12">
               <PushButton>
                 <button
+                  type="button"
+                  className="btn"
                   onClick={async (e) => {
                     e.preventDefault();
                     sendNotificationToALl.current.click();
@@ -584,6 +656,14 @@ const UserData = () => {
                   <i className="fa fa-paper-plane" aria-hidden="true"></i>
                   Push Notification To All
                 </button>
+                <ChangeReferAmt
+                  type="button"
+                  className="btn"
+                  data-toggle="modal"
+                  data-target="#editRefer"
+                >
+                  {`Edit Refer - ${refer.referamt}`}
+                </ChangeReferAmt>
               </PushButton>
             </div>
           </div>
@@ -628,10 +708,20 @@ const Pagination = styled.div`
 const PushButton = styled.div`
   display: flex;
   justify-content: center;
-  button{
+  button {
     background-color: #efeff2;
+    color: black;
     border: none;
     padding: 20px;
     border-radius: 55%;
   }
-`
+`;
+
+const ChangeReferAmt = styled.button`
+  margin-left: 5px;
+  background-color: #efeff2;
+  color: black;
+  border: none;
+  padding: 20px;
+  border-radius: 55%;
+`;

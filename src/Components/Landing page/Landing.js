@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Landing = () => {
   const [active, setActive] = useState(true);
   return (
-    <div>
+    <Main>
       <header id="header" className="d-flex align-items-center">
         <Header className="container">
           <a href="index.html" className="logo">
@@ -18,7 +18,7 @@ const Landing = () => {
               <li>
                 <a
                   className="nav-link scrollto active"
-                  href="#hero"
+                  href="#home"
                   onClick={() => {
                     setActive(active === false ? true : true);
                   }}
@@ -63,7 +63,21 @@ const Landing = () => {
           {/* .navbar */}
         </Header>
       </header>
-      <Main id="main">
+
+      <div id="home" className="d-flex align-items-center">
+        <div className="container section-title" data-aos="zoom-out" data-aos-delay={100}>
+          <h3>
+            Welcome to <span>PayUcart</span>
+          </h3>
+          {/* <h4>Expertise you need. Service you deserve!</h4> */}
+          <div className="d-flex">
+            {/* <a href="#about" class="btn-get-started scrollto">Apply Now</a> */}
+            {/* <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>Watch Video</span></a> */}
+          </div>
+        </div>
+      </div>
+
+      <main id="main">
         {/* End Featured Services Section */}
         {/* ======= About Section ======= */}
         <section id="about" className="about section-bg">
@@ -71,7 +85,7 @@ const Landing = () => {
             <div className="section-title">
               <h2>About Us</h2>
               <h3>
-                Welcome To <span>PayUCart</span>
+                {/* Welcome To <span>PayUCart</span> */}
               </h3>
             </div>
             <div className="row">
@@ -278,7 +292,7 @@ const Landing = () => {
             </div>
           </div>
         </section>
-      </Main>
+      </main>
       {/* End #main */}
       {/* ======= Footer ======= */}
       <footer id="footer">
@@ -306,7 +320,7 @@ const Landing = () => {
       >
         <i className="bi bi-arrow-up-short" />
       </a>
-    </div>
+    </Main>
   );
 };
 
@@ -335,7 +349,20 @@ const Header = styled.div`
   }
 `;
 
-const Main = styled.main`
+const Main = styled.div`
+  #home .container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    div{
+      align-self: center;
+    }
+    h3{
+      display: block;
+      margin:auto;
+      margin-top: 30px;
+    }
+  }
   @media only screen and (max-width: 991px) {
     section,
     h3,

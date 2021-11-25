@@ -16,9 +16,13 @@ export const AdminState = ({ children }) => {
     page: 1,
     perPage: 5,
   });
+  const [refer, setRefer] = useState({
+    referamt: 0,
+    _id: "619b9aa1af944f2999a40d6e",
+  });
   const [condition, setCondition] = useState({ status: "", plan: "" });
   const [active, setActive] = useState({ active: "", Inactive: "" });
-  const host = "http://51eb-47-31-227-119.ngrok.io";
+  const host = "https://addspayucart.herokuapp.com";
   const dispatch = useDispatch();
 
   // FetchPackages
@@ -32,7 +36,7 @@ export const AdminState = ({ children }) => {
         },
       });
       const json = await response.json();
-      // dispatch(GetPackages(json.packagess));
+      dispatch(GetPackages(json.packagess));
     } catch (error) {
       console.log(error.message);
     }
@@ -246,21 +250,28 @@ export const AdminState = ({ children }) => {
   };
 
   const Login = async (email, password) => {
-    const response = await fetch(`${host}/auth/loginadmin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: email, password: password }),
-    });
-    const json = await response.json();
-    // await json.success===true?{setAlert.type(primary),}
-    if (json.success) {
-      localStorage.setItem("token", json.authtoken);
-      setDashboard(false);
-      fetchAllUsers();
-    } else {
-      alert("Invalid Credential");
+    try {
+      const response = await fetch(`${host}/auth/loginadmin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      // await json.success===true?{setAlert.type(primary),}
+      let json = {};
+      if (response) {
+        json = await response.json();
+      }
+      if (json.success) {
+        localStorage.setItem("token", json.authtoken);
+        setDashboard(false);
+        fetchAllUsers();
+      } else {
+        alert("Invalid Credential");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -315,12 +326,33 @@ export const AdminState = ({ children }) => {
       console.log(error.message, "err");
     }
   };
+  const fetchrefer = async () => {
+    try {
+      const response = await fetch(`${host}/admindata/fetchReferAmount`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+      });
+      const json = await response.json();
+      if (json) {
+        setRefer({
+          referamt: json.referamt,
+          _id: json._id,
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   const validator = async () => {
     try {
       if (localStorage.getItem("token")) {
         // let temp = JSON.stringify("notification_To_All");
-        const response = await axios.post(`${host}/admindata/validator`,
+        const response = await axios.post(
+          `${host}/admindata/validator`,
           {},
           {
             headers: {
@@ -337,6 +369,7 @@ export const AdminState = ({ children }) => {
           });
           await fetchAllUsers();
           await fetchPackages();
+          await fetchrefer()
         } else {
           setDashboard(true);
           return;
@@ -349,6 +382,31 @@ export const AdminState = ({ children }) => {
       setDashboard(true);
       console.log(error);
       return;
+    }
+  };  
+  const editrefer = async (editRefer,closeR) => {
+    try {
+      let temp = JSON.stringify(editRefer);
+      const response = await fetch(`${host}/admindata/editReferAmount/${refer._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: temp,
+      });
+      const json = await response.json();
+      if (json.refer) {
+        closeR.current.click();
+        setRefer({
+          referamt: json.refer,
+          _id: json._id,
+        });
+      } else {
+        console.log(json, "res");
+      }
+    } catch (error) {
+      console.log(error.message, "err");
     }
   };
 
@@ -375,6 +433,9 @@ export const AdminState = ({ children }) => {
         setCondition,
         notificationToAll,
         active,
+        fetchrefer,
+        refer,
+        editrefer,
       }}
     >
       {children}
