@@ -49,10 +49,10 @@ exports.fetchUserDatas = async (req, res) => {
         .status(500)
         .json({ success: "False", error: "Internal Server Error" });
     let conditions = {};
-    if (condition.status) {
+    if (condition.status!=="") {
       conditions["status"] = condition.status;
     }
-    if (condition.plan) {
+    if (condition.plan!=="") {
       conditions["plan"] = condition.plan;
     }
     let paginate = {
