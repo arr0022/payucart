@@ -27,6 +27,7 @@ router.post('/getbankbynumber', fetchuser,AuthValidationMiddleware.getBeneficiar
 
 
 
+
 // ROUTE 1: Create a Admin using: No login required
 router.post("/createadmin",
   VerifyuserMiddleware.hasAdminValidCredentialFields,
