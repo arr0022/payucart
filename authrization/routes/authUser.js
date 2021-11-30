@@ -25,9 +25,6 @@ router.get('/getbank', fetchuser,AuthValidationMiddleware.getBeneficiary)
 router.get('/getwallet', fetchuser,AuthValidationMiddleware.getwallet)
 router.post('/getbankbynumber', fetchuser,AuthValidationMiddleware.getBeneficiaryByNo)
 
-
-
-
 // ROUTE 1: Create a Admin using: No login required
 router.post("/createadmin",
   VerifyuserMiddleware.hasAdminValidCredentialFields,
