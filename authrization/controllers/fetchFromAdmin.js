@@ -57,15 +57,18 @@ exports.fetchUserDatas = async (req, res) => {
     }
     let paginate = {
       page: PageNo.page,
-      perPage: PageNo.perPage,
-      select: ["-password", "-otp"],
+      perPage: PageNo.perPage
     };
     console.log(conditions, "conditions");
     let Users = "";
     if (conditions.status || conditions.plan) {
-      console.log("enterC")
+      console.log("enterC");
       Users = await User_Login_Schema.paginate(conditions, paginate);
-    } else Users = await User_Login_Schema.paginate(paginate);
+      console.log(paginate);
+    } else {
+      console.log(paginate);
+      Users = await User_Login_Schema.paginate({},paginate);
+    }
     // if (Users.data.length <= 0) {
     //   return res.status(200).json({ success: false, Users: [] });
     // }
