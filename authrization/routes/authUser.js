@@ -23,6 +23,8 @@ router.get('/getuser', fetchuser,AuthValidationMiddleware.getuser)
 router.get('/getbank', fetchuser,AuthValidationMiddleware.getBeneficiary)
 
 router.get('/getwallet', fetchuser,AuthValidationMiddleware.getwallet)
+router.post('/getbankbynumber', fetchuser,AuthValidationMiddleware.getBeneficiaryByNo)
+
 
 
 

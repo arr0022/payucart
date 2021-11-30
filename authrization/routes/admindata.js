@@ -11,6 +11,7 @@ const User_Login_Schema = require("../../models/User_Login");
 
 router.get("/allUsers/:search", fetchFromAdmin.fetchUserData);
 router.post("/allUserss", ValidateAdmin, fetchFromAdmin.fetchUserDatas);
+router.post("/userDetail/:_id", ValidateAdmin, fetchFromAdmin.userDetail);
 
 // ======================Validate admin======================
 router.post("/validator", ValidateAdmin, async (req, res) => {
