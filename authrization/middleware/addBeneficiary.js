@@ -204,25 +204,25 @@ exports.PayU = async (req, res) => {
     const { token } = await req;
     // console.log(token)
     if (!token || !amount || !transferMode || !beneId)
-      return res.status(400).json({ error: "Pay Items are missing" });
+      return res.status(400).json({ error: "Pay Items are missing",token, amount, transferMode,beneId });
     // Mode of transfer, banktransfer by default. Allowed values are: banktransfer, upi, paytm, amazonpay, and card.
     const user = await User_Login_Schema.findOne({ _id}).select(
       "-password"
     );
-    // console.log(user);
+    console.log(user);
 
     let WithdrawAmt = await parseInt(amount);
 
     if (WithdrawAmt > user.wallet && user.wallet !== WithdrawAmt) {
       return res
         .status(400)
-        .json({ error: "can't accept this withdraw request" });
+        .json({ error: "can't accept this withdraw request",WithdrawAmt,wallet: user.wallet });
     }
     const trId = await Math.floor(
       Math.random() * 137461805669728 * parseFloat(amount)
     );
     const transferId = await trId.toString();
-    const remarks = await `Withdraw ${amount} transfer to ${id}`;
+    const remarks = await `Withdraw from wallet`;
     const response = await axios.request({
       method: "POST",
       url: `${testUrl}/payout/v1/requestTransfer`,
