@@ -234,6 +234,7 @@ exports.getwallet = async (req, res) => {
 
 exports.getuserfornext = async (req, res, next) => {
   try {
+    console.log("getuserfornext")
     userId = req.user.id;
     const user = await User_Login_Schema.findById(userId).select("-password");
     if (!user)
