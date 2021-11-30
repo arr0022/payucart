@@ -180,6 +180,7 @@ exports.createBeneficiary = async (req, res) => {
         console.log(user);
         // return res.status(200).json({User_Beneficiary: user})
       }
+      console.log({ User_Beneficiary: beni })
       return res.status(200).json({ User_Beneficiary: beni });
     } else {
       console.log(response.data, "response.data");
@@ -223,6 +224,7 @@ exports.PayU = async (req, res) => {
     );
     const transferId = await trId.toString();
     const remarks = await `Withdraw from wallet`;
+    console.log(beneId, amount, transferId, transferMode, remarks)
     const response = await axios.request({
       method: "POST",
       url: `${testUrl}/payout/v1/requestTransfer`,
