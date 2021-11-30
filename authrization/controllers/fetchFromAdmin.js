@@ -49,10 +49,10 @@ exports.fetchUserDatas = async (req, res) => {
         .status(500)
         .json({ success: "False", error: "Internal Server Error" });
     let conditions = {};
-    if (condition.status!=="") {
+    if (condition.status !== "") {
       conditions["status"] = condition.status;
     }
-    if (condition.plan!=="") {
+    if (condition.plan !== "") {
       conditions["plan"] = condition.plan;
     }
     let paginate = {
@@ -60,12 +60,12 @@ exports.fetchUserDatas = async (req, res) => {
       perPage: PageNo.perPage,
       select: ["-password", "-otp"],
     };
-
-    if (condition.plan) {
-      conditions["plan"] = condition.plan;
-    }
     console.log(conditions, "conditions");
-    const Users = await User_Login_Schema.paginate(conditions, paginate);
+    let Users = "";
+    if (conditions.status || conditions.plan) {
+      console.log("enterC")
+      Users = await User_Login_Schema.paginate(conditions, paginate);
+    } else Users = await User_Login_Schema.paginate(paginate);
     // if (Users.data.length <= 0) {
     //   return res.status(200).json({ success: false, Users: [] });
     // }
@@ -110,12 +110,14 @@ exports.userDetail = async (req, res) => {
     const _id = req.params._id;
     // console.log(_id);
     const Users = await User_Login_Schema.findOne({ _id });
-    const Transaction = await User_Transaction_Schema.find({ users: _id.toString() }).select("-_id");;
+    const Transaction = await User_Transaction_Schema.find({
+      users: _id.toString(),
+    }).select("-_id");
     // if (Users.data.length <= 0) {
     //   return res.status(200).json({ success: false, Users: [] });
     // }
     // console.lo
-    if (Transaction.length<=0)
+    if (Transaction.length <= 0)
       return res
         .status(200)
         .json({ Users, Transaction: "User don't have any transaction yet" });
@@ -227,7 +229,7 @@ exports.packageUpdate = async (req, res) => {
     if (!id) return res.status(407).json({ message: "Wrong Id" });
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
-    const commission = await Math.round(c)
+    const commission = await Math.round(c);
     let result = await Package.findByIdAndUpdate(
       { _id },
       { commission },
@@ -253,7 +255,7 @@ exports.userUpdate = async (req, res) => {
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
     const commission = await Math.round(c);
-    console.log("commision", "============>",commission )
+    console.log("commision", "============>", commission);
     let result = await User_Login_Schema.findByIdAndUpdate(
       { _id },
       { commission },
@@ -357,7 +359,7 @@ exports.userForgetPass = async (req, res) => {
     }
     console.log(otp, "after");
     let view = await sendSms.sendSms(otp, mobile);
-    console.log(view)
+    console.log(view);
     if (view === true) {
       let sendOtp = await User_Login_Schema.findByIdAndUpdate(
         { _id: result._id },
@@ -365,11 +367,11 @@ exports.userForgetPass = async (req, res) => {
         { new: true }
       ).select("-password");
       // console.log(sendOtp);
-      if (!sendOtp) return res.status(500).json({ message: "Internal Server Error" });
+      if (!sendOtp)
+        return res.status(500).json({ message: "Internal Server Error" });
       return res.status(200).json({ sendOtp: "Successfully send" });
-    }
-    else{
-      return res.status(500).json({ sendOtp: "otp Not send" })
+    } else {
+      return res.status(500).json({ sendOtp: "otp Not send" });
     }
   } catch (error) {
     console.log(error);
