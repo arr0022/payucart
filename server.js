@@ -170,7 +170,7 @@ app.get("/about", (req, res) => {
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/#term")
+    return res.redirect("http://www.payucart.com:3000/#terms")
     // console.log(response.data);
   } catch (error) {
     console.error(e);
