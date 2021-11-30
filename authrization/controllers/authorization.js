@@ -54,6 +54,47 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.getBeneficiaryByNo = async (req, res) => {
+  try {
+    console.log("getBeneficiaryByNo")
+    let Users = "";
+    if (req.body.mobile)
+      Users = await User_Login_Schema.findOne({
+        mobile: req.body.mobile,
+      }).select("-password");
+    else {
+      return res.status(400).json({
+        error: "Missing detail",
+      });
+    }
+    let beneficiary = "";
+    if (Users !== null) {
+      beneficiary = await User_Beneficiary.findOne({
+        beneId: Users._id.toString(),
+      }).select("-_id");
+    } else {
+      return res.status(400).json({
+        error: "Invalid Credential",
+      });
+    }
+    if (beneficiary===null)
+      return res.status(404).json({
+        success: false
+      });
+    // console.log(user);
+    return res.status(200).json({
+      success: true
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Internal Server Error",
+    });
+  }
+};
+
+
 exports.login = async (req, res) => {
   try {
     console.log("userlogin", req.body);

@@ -24,6 +24,10 @@ exports.authorize = (req, res, next) => {
     .request(options)
     .then(function (response) {
       console.log(response.data);
+      if(response.data.subCode==="403"){
+        return res.status(500).json({error:"Internal server error"})
+      }
+      console.log("here")
       req.url = `${testUrl}/payout/v1/verifyToken`;
       req.token = response.data.data.token;
       return next();
@@ -79,9 +83,9 @@ exports.validateBeneficiary = async (req, res, next) => {
           { new: true }
         ).select("-password");
         // console.log(user);
-        return res.status(200).json({ User_Beneficiary: "Already Exist" });
+        return res.status(400).json({ User_Beneficiary: "Already Exist" });
       }
-      return res.status(200).json({ User_Beneficiary: "Already Exist" });
+      return res.status(400).json({ User_Beneficiary: "Already Exist" });
     }
     console.log("not beneficiary");
     return next();

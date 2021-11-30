@@ -9,6 +9,7 @@ const img = path.join(__dirname + "../../../upload/images/");
 const axios = require("axios").default;
 const FCM = require("fcm-node");
 const serverKey = process.env.firebase_msg_key;
+const User_Transaction_Schema = require("../../models/Transaction");
 
 // Fetch user Data for admin without pagination create
 exports.fetchUserData = async (req, res) => {
@@ -100,6 +101,34 @@ exports.bannerCreate = async (req, res) => {
     return res.status(407).json({
       error: error,
     });
+  }
+};
+
+exports.userDetail = async (req, res) => {
+  try {
+    // let status = req.body.status || Inactive
+    const _id = req.params._id;
+    // console.log(_id);
+    const Users = await User_Login_Schema.findOne({ _id });
+    const Transaction = await User_Transaction_Schema.find({ users: _id.toString() }).select("-_id");;
+    // if (Users.data.length <= 0) {
+    //   return res.status(200).json({ success: false, Users: [] });
+    // }
+    // console.lo
+    if (Transaction.length<=0)
+      return res
+        .status(200)
+        .json({ Users, Transaction: "User don't have any transaction yet" });
+    else {
+      console.log(Transaction.length);
+      return res.status(200).json({ Users, Transaction });
+    }
+  } catch (error) {
+    let success = false;
+    console.error(error.message);
+    return res
+      .status(500)
+      .send(`${success}: ${error.message} || Internal Server Error`);
   }
 };
 
