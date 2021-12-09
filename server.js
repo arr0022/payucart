@@ -14,7 +14,6 @@ const cron = require("node-cron");
 connectToMongo.connect();
 const app = express();
 const port = 5000;
-
 app.use(cors());
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -167,6 +166,13 @@ app.get("/about", (req, res) => {
   }
 });
 
+app.get("/app-ads.txt", (req,res)=>{
+  try {
+    return res.status(200).render("app-ads");
+  } catch (error) {
+    console.log(error)
+  }
+})
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
