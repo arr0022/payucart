@@ -6,6 +6,7 @@ const AuthValidationMiddleware = require("../controllers/authorization")
 const addBeneficiary = require("../middleware/addBeneficiary")
 const pay = require("../middleware/pay")
 const profile = require("../../util/profileMulter");
+const ReferAmount = require("../../models/ReferModal");
 
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
 router.post("/createuser",
@@ -61,5 +62,28 @@ router.post('/editProfile',fetchuser,AuthValidationMiddleware.editProfile)
 router.post('/getReward',fetchuser, AuthValidationMiddleware.reward)
 
 router.post('/getUserPlan',fetchuser, AuthValidationMiddleware.getUserPlan)
+
+router.get("/fetchReferText",fetchuser, async (req, res) => {
+  try {
+    console.log("fetchReferText")
+    // let result = await ReferAmount.create({ refer: 5 });
+    const refervalue = await ReferAmount.find();
+    let data = {};
+
+    refervalue.map((x, n) => {
+      if (n === 0) {
+        data = {
+          referAmt: x.refer
+        };
+      }
+    });
+    console.log(typeof(data.referAmt),"here")
+    // data = await `Invite friends and get a amount of Rs for each Refer in wallet`
+    data = await `Invite friends and get Rs ${data.referAmt} for each referral in Wallet`
+    res.status(200).json({data});
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 
 module.exports = router
