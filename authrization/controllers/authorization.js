@@ -446,18 +446,30 @@ exports.reward = async (req, res) => {
         .json({ success: false, message: "User Not Exist" });
     if (user.plan > 0 && user.perDayAddLimit > 0) {
       let packages = await Package.findOne({ plan: user.plan });
-      // console.log(packages);
+      console.log("CurrentBal=>", user.wallet);
       if (!packages.dailyAds)
         return res
           .status(500)
           .json({ success: "false", message: "Interwal Server Err" });
-      let perDayAddLimit = (await user.perDayAddLimit) - 1;
-      let commission = (await user.commission) / packages.dailyAds;
-      let wallet = await (parseInt(user.wallet) + commission).toString();
-      let tEarning = await (parseInt(user.tEarning) + commission).toString();
+      let perDayAddLimit = await user.perDayAddLimit - 1;
+      let calCommission = await user.commission / packages.dailyAds;
+      let wallet = await parseFloat(user.wallet) + parseFloat(calCommission);
+      let tEarning = await parseFloat(user.tEarning) + parseFloat(calCommission);
       let tcomplete = (await user.tcomplete) + 1;
-      let changes = await { perDayAddLimit, wallet, tEarning, tcomplete };
-      console.log(changes);
+      let changes = await {
+        perDayAddLimit,
+        wallet: wallet.toString(),
+        tEarning: tEarning.toString(),
+        tcomplete,
+      };
+      console.log({
+        perDayAddLimit,
+        wallet,
+        tEarning,
+        tcomplete,
+        commission: user.commission,
+        commission1: calCommission,
+      });
       const check = await User_Login_Schema.findByIdAndUpdate(
         { _id: user._id },
         changes,
@@ -465,9 +477,9 @@ exports.reward = async (req, res) => {
       ).select("-password");
       if (!check)
         return res
-          .status(400)
-          .json({ success: "false", message: "Interwal Server Error" });
-      let amount = await commission;
+          .status(500)
+          .json({ success: "false", message: "Interwal Server Errors" });
+      let amount = await calCommission;
       let remark = `reward add to wallet`;
       let addTransaction = await User_Transaction_Schema.create({
         users: check._id.toString(),
@@ -497,8 +509,8 @@ exports.reward = async (req, res) => {
       .json({ success: "false", message: "You Don't Have Active Plan" });
   } catch (error) {
     res
-      .status(400)
-      .json({ success: "false", message: "Interwal Server Erro", error });
+      .status(500)
+      .json({ success: "false", message: "Interwal Server Erro", error: error.message });
   }
 };
 
