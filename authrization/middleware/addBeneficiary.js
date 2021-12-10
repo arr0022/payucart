@@ -24,10 +24,10 @@ exports.authorize = (req, res, next) => {
     .request(options)
     .then(function (response) {
       console.log(response.data);
-      if(response.data.subCode==="403"){
-        return res.status(500).json({error:"Internal server error"})
+      if (response.data.subCode === "403") {
+        return res.status(500).json({ error: "Internal server error" });
       }
-      console.log("here")
+      console.log("here");
       req.url = `${testUrl}/payout/v1/verifyToken`;
       req.token = response.data.data.token;
       return next();
@@ -76,7 +76,7 @@ exports.validateBeneficiary = async (req, res, next) => {
       }
       console.log("beneficiary");
       let user = await User_Login_Schema.findById({ _id });
-      if (user.beneficiary ===false) {
+      if (user.beneficiary === false) {
         user = await User_Login_Schema.findByIdAndUpdate(
           { _id },
           { beneficiary: "true" },
@@ -180,7 +180,7 @@ exports.createBeneficiary = async (req, res) => {
         console.log(user);
         // return res.status(200).json({User_Beneficiary: user})
       }
-      console.log({ User_Beneficiary: beni })
+      console.log({ User_Beneficiary: beni });
       return res.status(200).json({ User_Beneficiary: beni });
     } else {
       console.log(response.data, "response.data");
@@ -205,26 +205,34 @@ exports.PayU = async (req, res) => {
     const { token } = await req;
     // console.log(token)
     if (!token || !amount || !transferMode || !beneId)
-      return res.status(400).json({ error: "Pay Items are missing",token, amount, transferMode,beneId });
+      return res.status(400).json({
+        error: "Pay Items are missing",
+        token,
+        amount,
+        transferMode,
+        beneId,
+      });
     // Mode of transfer, banktransfer by default. Allowed values are: banktransfer, upi, paytm, amazonpay, and card.
-    const user = await User_Login_Schema.findOne({ _id}).select(
-      "-password"
-    );
+    const user = await User_Login_Schema.findOne({ _id }).select("-password");
     console.log(user);
 
     let WithdrawAmt = await parseInt(amount);
+    let walletBal = await parseInt(user.wallet);
 
-    if (WithdrawAmt > user.wallet && user.wallet !== WithdrawAmt) {
-      return res
-        .status(400)
-        .json({ error: "can't accept this withdraw request",WithdrawAmt,wallet: user.wallet });
+    if (WithdrawAmt > walletBal && walletBal !== WithdrawAmt) {
+      return res.status(400).json({
+        error: "can't accept this withdraw request",
+        WithdrawAmt,
+        wallet: user.wallet,
+      });
     }
+    WithdrawAmt = await parseFloat(amount);
     const trId = await Math.floor(
-      Math.random() * 137461805669728 * parseFloat(amount)
+      Math.random() * 137461805669728 * WithdrawAmt
     );
     const transferId = await trId.toString();
     const remarks = await `Withdraw from wallet`;
-    console.log(beneId, amount, transferId, transferMode, remarks)
+    console.log(beneId, WithdrawAmt, transferId, transferMode, remarks);
     const response = await axios.request({
       method: "POST",
       url: `${testUrl}/payout/v1/requestTransfer`,
@@ -233,23 +241,25 @@ exports.PayU = async (req, res) => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      data: { beneId, amount, transferId, transferMode, remarks },
+      data: { beneId, amount: WithdrawAmt, transferId, transferMode, remarks },
     });
 
     if (!response) {
       console.log(response.data);
-      return res.status(400).json({ error: "Internal Server pay error" });
+      return res.status(500).json({ error: "Internal Server pay error" });
     }
     console.log("after");
     // let users = await _id;
-    let wallet = await user.wallet - WithdrawAmt;
+    let wallet = await (
+      parseInt(user.wallet) - parseInt(WithdrawAmt)
+    ).toString();
     let walletUser = await User_Login_Schema.findOneAndUpdate(
-      { _id},
+      { _id },
       { wallet },
       { new: true }
     ).select("-password");
     let addTransaction = await User_Transaction_Schema.create({
-      users:_id,
+      users: _id,
       remark: `Withdraw money from wallet`,
       amount,
     });
@@ -257,10 +267,10 @@ exports.PayU = async (req, res) => {
       // console.log({message: response.data});
       return res.status(200).json(response.data);
     }
-    return res.status(400).json({ error: "Internal Server error" });
+    return res.status(500).json({ error: "Internal Server error" });
   } catch (error) {
     console.error(error, "ethis");
-    return res.status(400).json({ error });
+    return res.status(500).json({ error });
   }
 };
 

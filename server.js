@@ -119,8 +119,8 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
       console.log("SUCCESS");
       const _id = await req.params._id;
       let user = await User_Login_Schema.findById({ _id }).select("-password");
-      let money = await parseInt(response.orderAmount);
-      let wallet = (await user.wallet) + money;
+      let money = await response.orderAmount;
+      let wallet = await (parseInt(user.wallet) + parseInt(money)).toString();
       let walletUser = await User_Login_Schema.findOneAndUpdate(
         { _id },
         { wallet },
@@ -142,7 +142,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
       if (!walletUser)
         return res.status(400).render("success", {
           message: `We received ${response.orderAmount} successfully`,
-          subMessage: `Due to some technical issue your amount is not added to your please contact customer care`,
+          subMessage: `Due to some technical issue your amount is not added to your wallet please contact our customer care`,
         });
     } else if (response.txStatus === "FAILED") {
       console.log("failed");
@@ -158,7 +158,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
 // About page URL
 app.get("/about", (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/#about")
+    return res.redirect("http://www.payucart.com:3000/#about");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -166,17 +166,17 @@ app.get("/about", (req, res) => {
   }
 });
 
-app.get("/app-ads.txt", (req,res)=>{
+app.get("/app-ads.txt", (req, res) => {
   try {
     return res.status(200).render("app-ads");
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/#terms")
+    return res.redirect("http://www.payucart.com:3000/#terms");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -187,11 +187,11 @@ app.get("/term&condition", async (req, res) => {
 // About privacy URL
 app.get("/privacy", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/")
+    return res.redirect("http://www.payucart.com:3000/");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
-    res.status(400).json({e});
+    res.status(400).json({ e });
   }
 });
 
@@ -238,7 +238,7 @@ cron.schedule("5 5 0 * * *", async () => {
             perDayAddLimit: res.dailyAds,
             tEarning: 0,
             tcomplete: 0,
-            yEarning: x.tEarning
+            yEarning: x.tEarning,
           };
         })
         .catch((err) => {
@@ -266,7 +266,7 @@ cron.schedule("5 5 0 * * *", async () => {
 // })
 
 // Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, './build')));
+app.use(express.static(path.resolve(__dirname, "./build")));
 
 // Handle GET requests to /api route
 // app.get("/api", (req, res) => {
@@ -274,8 +274,8 @@ app.use(express.static(path.resolve(__dirname, './build')));
 // });
 
 // All other GET requests not handled before will return our React app
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './build','index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./build", "index.html"));
 });
 app.listen(process.env.PORT || 3001, () => {
   console.log(`backend listening at port:${process.env.PORT}`);

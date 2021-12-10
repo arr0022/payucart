@@ -46,8 +46,8 @@ const UserSchema = new Schema({
     default: "false",
   },
   commission: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '0',
   },
   totalROI: {
     type: Number,
@@ -63,8 +63,8 @@ const UserSchema = new Schema({
     default: "None",
   },
   wallet: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '0',
   },
   fcm_token: {
     type: String,
@@ -76,12 +76,12 @@ const UserSchema = new Schema({
     default: "None",
   },
   tEarning: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '0',
   },
   yEarning: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '0',
   },
   tcomplete: {
     type: Number,

@@ -57,7 +57,7 @@ exports.fetchUserDatas = async (req, res) => {
     }
     let paginate = {
       page: PageNo.page,
-      perPage: PageNo.perPage
+      perPage: PageNo.perPage,
     };
     console.log(conditions, "conditions");
     let Users = "";
@@ -67,7 +67,7 @@ exports.fetchUserDatas = async (req, res) => {
       console.log(paginate);
     } else {
       console.log(paginate);
-      Users = await User_Login_Schema.paginate({},paginate);
+      Users = await User_Login_Schema.paginate({}, paginate);
     }
     // if (Users.data.length <= 0) {
     //   return res.status(200).json({ success: false, Users: [] });
@@ -175,7 +175,8 @@ exports.ImageDelete = async (req, res) => {
 exports.createPackage = async (req, res) => {
   try {
     let payload = await req.body;
-    const commission = await percentage(payload, req, res);
+    let commission = await percentage(payload, req, res);
+    commission = await Math.round(commission);
     let option = {
       plan: payload.plan,
       dailyAds: payload.dailyAds,
