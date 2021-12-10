@@ -56,7 +56,7 @@ exports.create = async (req, res) => {
 
 exports.getBeneficiaryByNo = async (req, res) => {
   try {
-    console.log("getBeneficiaryByNo")
+    console.log("getBeneficiaryByNo");
     let Users = "";
     if (req.body.mobile)
       Users = await User_Login_Schema.findOne({
@@ -77,13 +77,13 @@ exports.getBeneficiaryByNo = async (req, res) => {
         error: "Invalid Credential",
       });
     }
-    if (beneficiary===null)
+    if (beneficiary === null)
       return res.status(404).json({
-        success: false
+        success: false,
       });
     // console.log(user);
     return res.status(200).json({
-      success: true
+      success: true,
     });
   } catch (error) {
     console.error(error.message);
@@ -93,7 +93,6 @@ exports.getBeneficiaryByNo = async (req, res) => {
     });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -234,7 +233,7 @@ exports.getwallet = async (req, res) => {
 
 exports.getuserfornext = async (req, res, next) => {
   try {
-    console.log("getuserfornext")
+    console.log("getuserfornext");
     userId = req.user.id;
     const user = await User_Login_Schema.findById(userId).select("-password");
     if (!user)
@@ -279,7 +278,9 @@ exports.refer = async (req, res) => {
     if (!user) return res.status(401).json({ message: "user doesn't exist" });
     console.log(user);
     if (user.referBy !== "None")
-      return res.status(400).json({ message: "Already get a reward for reward" });
+      return res
+        .status(400)
+        .json({ message: "Already get a reward for reward" });
     if (user.referCode === referBy) {
       console.log(`user.referCode === referBy`);
       return res
@@ -323,7 +324,7 @@ exports.refer = async (req, res) => {
       // if (!refercode)
       //   return res.status(400).json({ error: "Internal Server Error" });
       if (refercode) {
-        console.log(refercode)
+        console.log(refercode);
         addTransaction = await User_Transaction_Schema.create({
           users: refercode._id.toString(),
           remark,
@@ -443,17 +444,17 @@ exports.reward = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "User Not Exist" });
-    if (user.plan && user.perDayAddLimit > 0) {
+    if (user.plan > 0 && user.perDayAddLimit > 0) {
       let packages = await Package.findOne({ plan: user.plan });
-      console.log(packages);
+      // console.log(packages);
       if (!packages.dailyAds)
         return res
-          .status(400)
+          .status(500)
           .json({ success: "false", message: "Interwal Server Err" });
       let perDayAddLimit = (await user.perDayAddLimit) - 1;
       let commission = (await user.commission) / packages.dailyAds;
-      let wallet = await parseInt(user.wallet + commission);
-      let tEarning = (await user.tEarning) + commission;
+      let wallet = await (parseInt(user.wallet) + commission).toString();
+      let tEarning = await (parseInt(user.tEarning) + commission).toString();
       let tcomplete = (await user.tcomplete) + 1;
       let changes = await { perDayAddLimit, wallet, tEarning, tcomplete };
       console.log(changes);
@@ -466,7 +467,7 @@ exports.reward = async (req, res) => {
         return res
           .status(400)
           .json({ success: "false", message: "Interwal Server Error" });
-      let amount = await parseInt(commission);
+      let amount = await commission;
       let remark = `reward add to wallet`;
       let addTransaction = await User_Transaction_Schema.create({
         users: check._id.toString(),
@@ -474,6 +475,10 @@ exports.reward = async (req, res) => {
         amount,
       });
       console.log(addTransaction);
+      if (!addTransaction)
+        return res
+          .status(500)
+          .json({ success: "false", message: "Interwal Server Err" });
       return res.status(200).json({
         success: true,
         message: "reward add in wallet successfully",
