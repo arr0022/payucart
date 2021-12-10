@@ -46,8 +46,8 @@ const UserSchema = new Schema({
     default: "false",
   },
   commission: {
-    type: String,
-    default: '0',
+    type: Number,
+    default: 0,
   },
   totalROI: {
     type: Number,
