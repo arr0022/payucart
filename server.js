@@ -197,7 +197,7 @@ app.get("/privacy", async (req, res) => {
 
 cron.schedule("* * * * *", async () => {
   try {
-    let user = await User_Login_Schema.find({ plan: { $gt: 1 } });
+    let user = await User_Login_Schema.find({ plan: { $gte: 1 } });
     user.map(async (x, n) => {
       let a = new Date();
       let b = new Date(x.planExpireOn);
@@ -228,7 +228,7 @@ cron.schedule("* * * * *", async () => {
 
 cron.schedule("5 5 0 * * *", async () => {
   try {
-    let user = await User_Login_Schema.find({ plan: { $gt: 1 } });
+    let user = await User_Login_Schema.find({ plan: { $gte: 1} });
     user.map(async (x, n) => {
       let changes = { perDayAddLimit: 1 };
       await Package.findOne({ plan: x.plan })
