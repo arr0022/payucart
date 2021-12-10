@@ -50,7 +50,9 @@ exports.createOrder = async (req, res, next) => {
     const { name, mobile, _id } = req.user;
     console.log(req.user);
     const { orderId, orderAmount, orderCurrency } = req;
+
     console.log(orderId, orderAmount, orderCurrency);
+
     const verify = await PaymentGateway.verifyCredentials({
       env: config.enviornment,
       appId: process.env.PG_App_ID,
