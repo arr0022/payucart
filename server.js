@@ -11,12 +11,15 @@ const User_Login_Schema = require("./models/User_Login");
 const User_Transaction_Schema = require("./models/Transaction");
 const Package = require("./models/Packages");
 const cron = require("node-cron");
+const http = require('http');
+
 connectToMongo.connect();
 const app = express();
 const port = 5000;
 app.use(cors());
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
+const server = http.createServer(app);
 // app.set("views", path.join(__dirname, "views/assets"));
 app.use(express.json());
 
@@ -277,7 +280,8 @@ app.use(express.static(path.resolve(__dirname, "./build")));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./build", "index.html"));
 });
-app.listen(process.env.PORT || 3001, () => {
+// server
+server.listen(process.env.PORT || 3001, () => {
  console.log(`backend listening at port:${process.env.PORT}`);
 });
 
