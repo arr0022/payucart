@@ -281,7 +281,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./build", "index.html"));
 });
 // server
-server.listen(process.env.PORT || 3001, () => {
+server.listen(process.env.PORT || 3000, () => {
  console.log(`backend listening at port:${process.env.PORT}`);
 });
 
