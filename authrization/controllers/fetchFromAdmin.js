@@ -531,7 +531,7 @@ exports.pushNotification = async (req, res) => {
         console.log("err");
       });
   } catch (error) {
-    if (error) throw error;
+    console.log("err");
   }
 };
 
@@ -566,7 +566,7 @@ exports.pushNotificationToAll = async (req, res) => {
     }
     return res.status(400).json({ error: "not send successfully" });
   } catch (error) {
-    if (error) throw error;
+    console.log("err");
   }
 };
 

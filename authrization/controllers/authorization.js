@@ -385,7 +385,7 @@ exports.refer = async (req, res) => {
 //         console.log("err");
 //       });
 //   } catch (error) {
-//     if (error) throw error;
+//    console.log("err");
 //   }
 // };
 
@@ -451,10 +451,11 @@ exports.reward = async (req, res) => {
         return res
           .status(500)
           .json({ success: "false", message: "Interwal Server Err" });
-      let perDayAddLimit = await user.perDayAddLimit - 1;
-      let calCommission = await user.commission / packages.dailyAds;
-      let wallet = await parseFloat(user.wallet) + parseFloat(calCommission);
-      let tEarning = await parseFloat(user.tEarning) + parseFloat(calCommission);
+      let perDayAddLimit = (await user.perDayAddLimit) - 1;
+      let calCommission = (await user.commission) / packages.dailyAds;
+      let wallet = (await parseFloat(user.wallet)) + parseFloat(calCommission);
+      let tEarning =
+        (await parseFloat(user.tEarning)) + parseFloat(calCommission);
       let tcomplete = (await user.tcomplete) + 1;
       let changes = await {
         perDayAddLimit,
@@ -510,7 +511,11 @@ exports.reward = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ success: "false", message: "Interwal Server Erro", error: error.message });
+      .json({
+        success: "false",
+        message: "Interwal Server Erro",
+        error: error.message,
+      });
   }
 };
 
