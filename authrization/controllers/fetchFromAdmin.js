@@ -101,7 +101,7 @@ exports.bannerCreate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(407).json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -167,7 +167,7 @@ exports.ImageDelete = async (req, res) => {
     // console.log(del);
     return res.status(200).json({ message });
   } catch (error) {
-    return res.status(407).json({ error: error });
+    return res.status(500).json({ error: error });
   }
 };
 
@@ -188,7 +188,7 @@ exports.createPackage = async (req, res) => {
     console.log(result);
     return res.status(200).json({ message: "package created" });
   } catch (error) {
-    return res.status(407).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 // get packages--
@@ -217,7 +217,7 @@ exports.packageDelete = async (req, res) => {
       message: "package deleted",
     });
   } catch (error) {
-    return res.status(0.407).json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -230,7 +230,7 @@ exports.packageUpdate = async (req, res) => {
     let _id = req.params.id;
     let payload = req.body;
     let id = await Package.findOne({ _id });
-    if (!id) return res.status(407).json({ message: "Wrong Id" });
+    if (!id) return res.status(500).json({ message: "Wrong Id" });
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
     const commission = await Math.round(c);
@@ -242,7 +242,7 @@ exports.packageUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "package updated" });
   } catch (error) {
     console.log(error);
-    return res.status(407).json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -255,7 +255,7 @@ exports.userUpdate = async (req, res) => {
     let _id = req.params.id;
     let payload = req.body;
     let id = await User_Login_Schema.findOne({ _id });
-    if (!id) return res.status(407).json({ message: "Wrong Id" });
+    if (!id) return res.status(500).json({ message: "Wrong Id" });
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
     const commission = await Math.round(c);
@@ -268,7 +268,7 @@ exports.userUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "User updated" });
   } catch (error) {
     console.log(error);
-    return res.status(407).json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -424,7 +424,7 @@ exports.createNewPassword = async (req, res) => {
       return res.json({ error: "please enter valid feilds" });
     if (confrimPassword !== password) {
       return res
-        .status(407)
+        .status(500)
         .json({ error: "both password field must be same" });
     } else {
       const salt = await bcrypt.genSalt(10);
@@ -438,7 +438,7 @@ exports.createNewPassword = async (req, res) => {
           { password: secretPassword, otp }
         ).select("-password");
         if (!result)
-          return res.status(407).json({ message: "something went wrong" });
+          return res.status(500).json({ message: "something went wrong" });
         return res
           .status(200)
           .json({ message: "Password change successfully" });
@@ -449,7 +449,7 @@ exports.createNewPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(407).json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -480,7 +480,7 @@ exports.changePassword = async (req, res) => {
           { _id: user_id },
           { password: secretPassword }
         ).catch((err) => {
-          return res.status(407).json({ message: "something went wrong" });
+          return res.status(500).json({ message: "something went wrong" });
         });
         return res.status(200).json({
           message: "password successfully updated",
@@ -489,7 +489,7 @@ exports.changePassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(407).json({ error: error });
+    return res.status(500).json({ error: error });
   }
 };
 
