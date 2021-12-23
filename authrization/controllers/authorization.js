@@ -463,6 +463,8 @@ exports.reward = async (req, res) => {
       wallet = wallet.toString();
       wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       let tEarning = parseFloat(user.tEarning) + parseFloat(calCommission);
+      tEarning = tEarning.toString();
+      tEarning = await tEarning.replace(tEarning.slice(tEarning.indexOf(".") + 2), "");
       let tcomplete = user.tcomplete + 1;
       let changes = {
         perDayAddLimit,
