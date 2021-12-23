@@ -68,7 +68,7 @@ exports.validateBeneficiary = async (req, res, next) => {
     const { _id } = req.user;
     const id = await _id.toString();
     console.log(id);
-    req.user.id = await id;
+    req.user.id = id;
     let beneficiary = await User_Beneficiary.findOne({ beneId: id });
     if (beneficiary) {
       if (req.body.amount) {
@@ -100,7 +100,7 @@ exports.validateBeneficiary = async (req, res, next) => {
 exports.createBeneficiary = async (req, res) => {
   try {
     console.log("createBeneficiary");
-    const { id } = await req.user;
+    const { id } = req.user;
     console.log(id);
     const {
       ifsc,
@@ -112,10 +112,10 @@ exports.createBeneficiary = async (req, res) => {
       state,
       pincode,
       address1,
-    } = await req.body;
+    } = req.body;
 
     // console.log(id);
-    const beneId = await id;
+    const beneId = id;
     if (
       !ifsc ||
       !bankAccount ||
@@ -130,7 +130,7 @@ exports.createBeneficiary = async (req, res) => {
       return res.status(400).json({ message: "detail missing" });
     }
     // console.log(typeOf(beneId));
-    const benis = await {
+    const benis = {
       ifsc,
       bankAccount,
       vpa,
@@ -143,7 +143,7 @@ exports.createBeneficiary = async (req, res) => {
       state,
       pincode,
     };
-    const bene = await {
+    const bene = {
       ifsc,
       bankAccount,
       vpa,
@@ -200,9 +200,9 @@ exports.PayU = async (req, res) => {
     const { _id } = req.user;
     // console.log(id);
     if (!_id) return res.status(400).json({ error: "Internal Server error" });
-    const beneId = await _id;
-    const { amount, transferMode } = await req.body;
-    const { token } = await req;
+    const beneId = _id;
+    const { amount, transferMode } = req.body;
+    const { token } = req;
     // console.log(token)
     if (!token || !amount || !transferMode || !beneId)
       return res.status(400).json({
@@ -216,8 +216,8 @@ exports.PayU = async (req, res) => {
     const user = await User_Login_Schema.findOne({ _id }).select("-password");
     console.log(user);
 
-    let WithdrawAmt = await parseInt(amount);
-    let walletBal = await parseInt(user.wallet);
+    let WithdrawAmt = parseInt(amount);
+    let walletBal = parseInt(user.wallet);
 
     if (WithdrawAmt > walletBal && walletBal !== WithdrawAmt) {
       return res.status(400).json({
@@ -226,12 +226,12 @@ exports.PayU = async (req, res) => {
         wallet: user.wallet,
       });
     }
-    WithdrawAmt = await parseFloat(amount);
-    const trId = await Math.floor(
+    WithdrawAmt = parseFloat(amount);
+    const trId = Math.floor(
       Math.random() * 137461805669728 * WithdrawAmt
     );
-    const transferId = await trId.toString();
-    const remarks = await `Withdraw from wallet`;
+    const transferId = trId.toString();
+    const remarks = `Withdraw from wallet`;
     console.log(beneId, WithdrawAmt, transferId, transferMode, remarks);
     const response = await axios.request({
       method: "POST",
@@ -250,7 +250,7 @@ exports.PayU = async (req, res) => {
     }
     console.log("after");
     // let users = await _id;
-    let wallet = await (
+    let wallet = (
       parseInt(user.wallet) - parseInt(WithdrawAmt)
     ).toString();
     let walletUser = await User_Login_Schema.findOneAndUpdate(

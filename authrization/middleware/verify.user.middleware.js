@@ -20,7 +20,7 @@ exports.hasAdminValidCredentialFields = [
 exports.createSecretPassword = async (req, res, next) => {
   console.log('createSecretPassword');
   const errors = validationResult(req);
-  let referCode = await "refer".concat(Math.floor(Math.random() * 123456789 * 369).toString())
+  let referCode = "refer".concat(Math.floor(Math.random() * 123456789 * 369).toString())
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array()});
   }
@@ -30,7 +30,7 @@ exports.createSecretPassword = async (req, res, next) => {
     if (user) return res.status(400).json({ error: "Sorry a user with this Mobile is already exists" });
     let checkRef = await User_Login_Schema.findOne({referCode});
     if(checkRef){
-      referCode = await "refer".concat(Math.floor(Math.random() * 369456789 * 369).toString())
+      referCode = "refer".concat(Math.floor(Math.random() * 369456789 * 369).toString())
     }
   } 
   else if (req.body.email) {

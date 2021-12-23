@@ -34,7 +34,7 @@ exports.fetchUserData = async (req, res) => {
     console.error(error.message);
     return res
       .status(500)
-      .send(`${success}: ${error.message} || Internal Server Error`);
+      .json(`${success}: ${error.message} || Internal Server Error`);
   }
 };
 
@@ -78,7 +78,7 @@ exports.fetchUserDatas = async (req, res) => {
     console.error(error.message);
     return res
       .status(500)
-      .send(`${success}: ${error.message} || Internal Server Error`);
+      .json(`${success}: ${error.message} || Internal Server Error`);
   }
 };
 
@@ -133,7 +133,7 @@ exports.userDetail = async (req, res) => {
     console.error(error.message);
     return res
       .status(500)
-      .send(`${success}: ${error.message} || Internal Server Error`);
+      .json(`${success}: ${error.message} || Internal Server Error`);
   }
 };
 
@@ -176,7 +176,7 @@ exports.createPackage = async (req, res) => {
   try {
     let payload = await req.body;
     let commission = await percentage(payload, req, res);
-    commission = await Math.round(commission);
+    commission = Math.round(commission);
     let option = {
       plan: payload.plan,
       dailyAds: payload.dailyAds,
@@ -233,7 +233,7 @@ exports.packageUpdate = async (req, res) => {
     if (!id) return res.status(500).json({ message: "Wrong Id" });
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
-    const commission = await Math.round(c);
+    const commission = Math.round(c);
     let result = await Package.findByIdAndUpdate(
       { _id },
       { commission },
@@ -258,7 +258,7 @@ exports.userUpdate = async (req, res) => {
     if (!id) return res.status(500).json({ message: "Wrong Id" });
     payload.plan = await id.plan;
     let c = await percentage(payload, req, res);
-    const commission = await Math.round(c);
+    const commission = Math.round(c);
     console.log("commision", "============>", commission);
     let result = await User_Login_Schema.findByIdAndUpdate(
       { _id },
@@ -320,7 +320,7 @@ const digits = (num, count) => {
 };
 
 const otpGenerate = async (req, res) => {
-  var otp = await Math.floor(10000 + Math.random() * 900000);
+  var otp = Math.floor(10000 + Math.random() * 900000);
   let count = 0;
   count = await digits(otp, count);
   console.log(count);
@@ -353,10 +353,10 @@ exports.userForgetPass = async (req, res) => {
     let result = await User_Login_Schema.findOne({ mobile });
     if (!result) return res.status(401).json({ message: "invalid user" });
 
-    // var otp = () => await Math.floor(Math.random() * 1000900 + 400);
+    // var otp = () => Math.floor(Math.random() * 1000900 + 400);
 
     let otp = await otpGenerate(req, res);
-    let check = await otp.toString();
+    let check = otp.toString();
     console.log(otp, "before");
     if (check.length !== 6) {
       otp = 369369;

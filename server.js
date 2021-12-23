@@ -11,7 +11,7 @@ const User_Login_Schema = require("./models/User_Login");
 const User_Transaction_Schema = require("./models/Transaction");
 const Package = require("./models/Packages");
 const cron = require("node-cron");
-const http = require('http');
+const http = require("http");
 
 connectToMongo.connect();
 const app = express();
@@ -49,20 +49,20 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
     console.log(response);
     if (response.txStatus === "SUCCESS") {
       console.log("SUCCESS");
-      const _id = await req.params._id;
+      const _id = req.params._id;
       // console.log(_id);
-      let plan = await Math.floor(response.orderAmount);
+      let plan = Math.floor(response.orderAmount);
       let packagess = await Package.findOne({ plan });
       // console.log(packagess);
       if (packagess) {
-        plan = await packagess.plan;
+        plan = packagess.plan;
         // console.log(plan);
         let DateNow = new Date();
-        let expireIn = await packagess.expireIn;
-        let perDayAddLimit = await packagess.dailyAds;
-        let commission = await packagess.commission;
-        let date = await DateNow.setDate(DateNow.getDate() + expireIn);
-        const planExpireOn = await new Date(date);
+        let expireIn = packagess.expireIn;
+        let perDayAddLimit = packagess.dailyAds;
+        let commission = packagess.commission;
+        let date = DateNow.setDate(DateNow.getDate() + expireIn);
+        const planExpireOn = new Date(date);
         // console.log(date);
         let use = await User_Login_Schema.findById({ _id });
         if (use.plan <= 0) {
@@ -80,9 +80,9 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
           if (user) console.log(user);
         }
       }
-      let users = await _id;
-      let remark = await `Thanks for buying our plan`;
-      let addTransaction = await User_Transaction_Schema.create({
+      let users = _id;
+      let remark = `Thanks for buying our plan`;
+      let addTransaction = User_Transaction_Schema.create({
         users,
         remark,
         amount: plan,
@@ -120,18 +120,20 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
     console.log(response);
     if (response.txStatus === "SUCCESS") {
       console.log("SUCCESS");
-      const _id = await req.params._id;
+      const _id = req.params._id;
       let user = await User_Login_Schema.findById({ _id }).select("-password");
-      let money = await response.orderAmount;
-      let wallet = await (parseInt(user.wallet) + parseInt(money)).toString();
+      let money = response.orderAmount;
+      let wallet = parseFloat(user.wallet) + parseFloat(money);
+      wallet = wallet.toString();
+      wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       let walletUser = await User_Login_Schema.findOneAndUpdate(
         { _id },
         { wallet },
         { new: true }
       ).select("-password");
-      let users = await _id;
-      let remark = await `Add money to wallet`;
-      let amount = await response.orderAmount;
+      let users = _id;
+      let remark = `Add money to wallet`;
+      let amount = response.orderAmount;
       let addTransaction = await User_Transaction_Schema.create({
         users,
         remark,
@@ -231,7 +233,7 @@ cron.schedule("* * * * *", async () => {
 
 cron.schedule("5 5 0 * * *", async () => {
   try {
-    let user = await User_Login_Schema.find({ plan: { $gte: 1} });
+    let user = await User_Login_Schema.find({ plan: { $gte: 1 } });
     user.map(async (x, n) => {
       let changes = { perDayAddLimit: 1 };
       await Package.findOne({ plan: x.plan })
@@ -282,7 +284,7 @@ app.get("*", (req, res) => {
 });
 // server
 server.listen(process.env.PORT || 3000, () => {
- console.log(`backend listening at port:${process.env.PORT}`);
+  console.log(`backend listening at port:${process.env.PORT}`);
 });
 
 //app.listen(3000, '127.0.0.1');

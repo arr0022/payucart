@@ -8,7 +8,7 @@ const ValidateAdmin = async (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .send({ error: "Please authenticate using a valid token" });
+        .json({ error: "Please authenticate using a valid token" });
     }
     const data = jwt.verify(token, process.env.JWT_SECRET);
     const Admin = await Admin_Login_Schema.findById({
@@ -19,11 +19,9 @@ const ValidateAdmin = async (req, res, next) => {
     }
     return next();
   } catch (error) {
-    return res
-      .status(401)
-      .send({
-        error: error.message || "Please authenticate using a valid token",
-      });
+    return res.status(401).json({
+      error: error.message || "Please authenticate using a valid token",
+    });
   }
 };
 

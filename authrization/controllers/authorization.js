@@ -50,7 +50,7 @@ exports.create = async (req, res) => {
     console.error(error.message);
     return res
       .status(500)
-      .send(`${success}: ${error.message} || Internal Server Error`);
+      .json(`${success}: ${error.message} || Internal Server Error`);
   }
 };
 
@@ -192,13 +192,16 @@ exports.getBeneficiary = async (req, res) => {
 exports.getuser = async (req, res) => {
   try {
     console.log("getuser");
-    userId = req.user.id;
+    let userId = req.user.id;
     const user = await User_Login_Schema.findById(userId).select("-password");
     if (!user)
       return res
         .status(401)
         .json({ success: false, error: "user doesn't exist" });
-    console.log(user);
+    let wallet = await user.wallet.toString();
+    wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+    user.wallet = await wallet;
+    console.log("updateuser", user);
     return res.status(200).json(user);
   } catch (error) {
     console.error(error.message);
@@ -294,7 +297,9 @@ exports.refer = async (req, res) => {
       refervalue.map((x, n) => {
         if (n === 0) referinr = x.refer;
       });
-      let wallet = (await referinr) + user.wallet;
+      let wallet = (await parseFloat(referinr)) + parseFloat(user.wallet);
+      wallet = await wallet.toString();
+      wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       let findRefer = await User_Login_Schema.findOne({ referCode: referBy });
 
       if (!findRefer)
@@ -401,7 +406,7 @@ exports.editProfile = async (req, res) => {
     // if (!img || img.length == 0) return res.status(400).json({error: "image not found"});
     // console.log(img.length);
     const userId = req.user.id;
-    let option = await {
+    let option = {
       profile: process.env.base + "/" + pathName,
     };
 
@@ -451,13 +456,15 @@ exports.reward = async (req, res) => {
         return res
           .status(500)
           .json({ success: "false", message: "Interwal Server Err" });
-      let perDayAddLimit = (await user.perDayAddLimit) - 1;
-      let calCommission = (await user.commission) / packages.dailyAds;
-      let wallet = (await parseFloat(user.wallet)) + parseFloat(calCommission);
-      let tEarning =
-        (await parseFloat(user.tEarning)) + parseFloat(calCommission);
-      let tcomplete = (await user.tcomplete) + 1;
-      let changes = await {
+      let perDayAddLimit = user.perDayAddLimit - 1;
+      let calCommission = user.commission / packages.dailyAds;
+      let wallet = parseFloat(user.wallet) + parseFloat(calCommission);
+      console.log("wallettt", wallet);
+      wallet = wallet.toString();
+      wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      let tEarning = parseFloat(user.tEarning) + parseFloat(calCommission);
+      let tcomplete = user.tcomplete + 1;
+      let changes = {
         perDayAddLimit,
         wallet: wallet.toString(),
         tEarning: tEarning.toString(),
@@ -480,7 +487,7 @@ exports.reward = async (req, res) => {
         return res
           .status(500)
           .json({ success: "false", message: "Interwal Server Errors" });
-      let amount = await calCommission;
+      let amount = calCommission;
       let remark = `reward add to wallet`;
       let addTransaction = await User_Transaction_Schema.create({
         users: check._id.toString(),
@@ -509,13 +516,11 @@ exports.reward = async (req, res) => {
       .status(400)
       .json({ success: "false", message: "You Don't Have Active Plan" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: "false",
-        message: "Interwal Server Erro",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: "false",
+      message: "Interwal Server Erro",
+      error: error.message,
+    });
   }
 };
 

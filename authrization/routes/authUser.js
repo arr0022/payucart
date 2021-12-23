@@ -79,7 +79,7 @@ router.get("/fetchReferText",fetchuser, async (req, res) => {
     });
     console.log(typeof(data.referAmt),"here")
     // data = await `Invite friends and get a amount of Rs for each Refer in wallet`
-    data = await `Invite friends and get Rs ${data.referAmt} for each referral in Wallet`
+    data = `Invite friends and get Rs ${data.referAmt} for each referral in Wallet`
     res.status(200).json({data});
   } catch (error) {
     res.status(500).json({ error });

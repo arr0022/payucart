@@ -22,7 +22,7 @@ const senderid = process.env.Sender_Id;
 
 exports.sendSms = async (otp, number) => {
   try {
-    let params = await {
+    let params =  {
       apikey,
       senderid,
       number,

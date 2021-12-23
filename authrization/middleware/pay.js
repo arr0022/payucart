@@ -16,15 +16,15 @@ exports.verify = async (req, res, next) => {
   try {
     console.log("verify");
     const { _id, name, mobile } = await req.user;
-    const id = await _id;
-    req.user.id = await id;
+    const id = _id;
+    req.user.id = id;
     const { amount } = await req.body;
     // console.log(name, mobile);
     // console.log(amount);
     // console.log(typeof amount);
-    let createOrderID = await Math.floor(Math.random() * 155560089 + parseFloat(amount));
+    let createOrderID = Math.floor(Math.random() * 155560089 + parseFloat(amount));
     req.orderId = await name.concat(mobile, createOrderID.toString());
-    req.orderAmount = await parseFloat(amount);
+    req.orderAmount = parseFloat(amount);
     // console.log(typeof req.orderAmount);
     req.orderCurrency = "INR";
     if (!req.orderAmount || !req.orderId || !mobile || !id) {
@@ -49,7 +49,7 @@ exports.createOrder = async (req, res, next) => {
     console.log("createOrder");
     const { name, mobile, _id } = req.user;
     console.log(req.user);
-    const { orderId, orderAmount, orderCurrency } = req;
+    const { orderId, orderAmount, orderCurrency } = await req;
 
     console.log(orderId, orderAmount, orderCurrency);
 
@@ -70,11 +70,11 @@ exports.createOrder = async (req, res, next) => {
     let returnUrl= ""
     let orderNote = ""
     if(req.body.tranferFor){
-      returnUrl= await `${process.env.base}/wallet/${orderId}/${_id}`
+      returnUrl= `${process.env.base}/wallet/${orderId}/${_id}`
       orderNote = await name.concat(mobile, " Wallet transaction ", orderAmount);
     }
     else{
-      returnUrl= await `${process.env.base}/payments/${orderId}/${_id}`
+      returnUrl= `${process.env.base}/payments/${orderId}/${_id}`
       orderNote = await name.concat(mobile, " plan ", orderAmount);
     }
     
