@@ -15,10 +15,10 @@ const pg = new PaymentGateway({
 exports.verify = async (req, res, next) => {
   try {
     console.log("verify");
-    const { _id, name, mobile } = await req.user;
+    const { _id, name, mobile } = req.user;
     const id = _id;
     req.user.id = id;
-    const { amount } = await req.body;
+    const { amount } = req.body;
     // console.log(name, mobile);
     // console.log(amount);
     // console.log(typeof amount);
@@ -49,7 +49,7 @@ exports.createOrder = async (req, res, next) => {
     console.log("createOrder");
     const { name, mobile, _id } = req.user;
     console.log(req.user);
-    const { orderId, orderAmount, orderCurrency } = await req;
+    const { orderId, orderAmount, orderCurrency } = req;
 
     console.log(orderId, orderAmount, orderCurrency);
 
@@ -71,11 +71,11 @@ exports.createOrder = async (req, res, next) => {
     let orderNote = ""
     if(req.body.tranferFor){
       returnUrl= `${process.env.base}/wallet/${orderId}/${_id}`
-      orderNote = await name.concat(mobile, " Wallet transaction ", orderAmount);
+      orderNote = name.concat(mobile, " Wallet transaction ", orderAmount);
     }
     else{
       returnUrl= `${process.env.base}/payments/${orderId}/${_id}`
-      orderNote = await name.concat(mobile, " plan ", orderAmount);
+      orderNote = name.concat(mobile, " plan ", orderAmount);
     }
     
     const order = await pg.orders.createOrders({
