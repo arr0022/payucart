@@ -40,7 +40,7 @@ exports.verify = async (req, res, next) => {
     }
     return next();
   } catch (e) {
-    return res.status(401).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 };
 
@@ -92,7 +92,7 @@ exports.createOrder = async (req, res, next) => {
     return next();
   } catch (error) {
     console.error(error);
-    return res.status(401).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
