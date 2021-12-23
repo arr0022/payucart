@@ -163,7 +163,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
 // About page URL
 app.get("/about", (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/#about");
+    return res.redirect("http://www.payucart.com/about");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -181,7 +181,7 @@ app.get("/app-ads.txt", (req, res) => {
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/#terms");
+    return res.redirect("http://www.payucart.com/TermAndCondition");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -192,7 +192,7 @@ app.get("/term&condition", async (req, res) => {
 // About privacy URL
 app.get("/privacy", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com:3000/");
+    return res.redirect("http://www.payucart.com/#privacy");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
