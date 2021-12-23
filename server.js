@@ -192,7 +192,7 @@ app.get("/term&condition", async (req, res) => {
 // About privacy URL
 app.get("/privacy", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com/#privacy");
+    return res.redirect("http://www.payucart.com/privacy");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
