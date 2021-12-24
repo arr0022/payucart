@@ -99,7 +99,7 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: error.message });
+    return res.status(200).render("failed");
   }
 });
 
@@ -156,7 +156,8 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: error.message });
+    return res.status(200).render("failed");
+    // res.status(400).json({ error: error.message });
   }
 });
 // app.post("/")
