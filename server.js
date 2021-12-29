@@ -24,6 +24,7 @@ const server = http.createServer(app);
 app.use(express.json());
 
 app.use("/banner", express.static(__dirname + "/upload/images"));
+app.use("/videos", express.static(__dirname + "/upload/videos"));
 app.use("", express.static(__dirname + "/upload/"));
 // app.use("/payment",express.static(__dirname + '/view'));
 
@@ -126,7 +127,10 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
       let money = response.orderAmount;
       let wallet = parseFloat(user.wallet) + parseFloat(money);
       wallet = wallet.toString();
-      wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      let r = wallet.indexOf(".")
+      if(r!==-1){
+        wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      }
       let walletUser = await User_Login_Schema.findOneAndUpdate(
         { _id },
         { wallet },

@@ -198,9 +198,12 @@ exports.getuser = async (req, res) => {
       return res
         .status(401)
         .json({ success: false, error: "user doesn't exist" });
-    let wallet = await user.wallet.toString();
-    wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
-    user.wallet = await wallet;
+    let wallet = user.wallet.toString();
+    let r = wallet.indexOf(".");
+    if (r !== -1) {
+      wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+    }
+    user.wallet = wallet;
     console.log("updateuser", user);
     return res.status(200).json(user);
   } catch (error) {
@@ -297,10 +300,13 @@ exports.refer = async (req, res) => {
       refervalue.map((x, n) => {
         if (n === 0) referinr = x.refer;
       });
-      let wallet =  parseFloat(referinr) + parseFloat(user.wallet) + 0.1;
-      console.log("Before String wallet.>>>>",wallet);
+      let wallet = parseFloat(referinr) + parseFloat(user.wallet) + 0.1;
+      console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
-      wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      let r = wallet.indexOf(".")
+      if(r!==-1){
+        wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      }
       // console.log("wallet.>>>>",wallet);
       let findRefer = await User_Login_Schema.findOne({ referCode: referBy });
 
@@ -322,13 +328,16 @@ exports.refer = async (req, res) => {
         remark,
         amount,
       });
-      console.log("Before Convert wallet.>>>>",findRefer.wallet);
+      console.log("Before Convert wallet.>>>>", findRefer.wallet);
       wallet = parseFloat(findRefer.wallet) + parseFloat(referinr) + 0.1;
-      console.log("Before String wallet.>>>>",wallet);
+      console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
-      console.log("After String wallet.>>>>",wallet);
-      wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
-      console.log("wallet.>>>>",wallet);
+      console.log("After String wallet.>>>>", wallet);
+      let r1 = wallet.indexOf(".")
+      if(r1!==-1){
+        wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      }
+      console.log("wallet.>>>>", wallet);
       let refercode = await User_Login_Schema.findOneAndUpdate(
         { referCode: referBy },
         { wallet },
@@ -463,16 +472,27 @@ exports.reward = async (req, res) => {
       if (!packages.dailyAds)
         return res
           .status(500)
-          .json({ success: "false", message: "Interwal Server Err" });
+          .json({ success: "false", message: "Interval Server Error" });
       let perDayAddLimit = user.perDayAddLimit - 1;
       let calCommission = user.commission / packages.dailyAds;
-      let wallet = parseFloat(user.wallet) + parseFloat(calCommission) + 0.0;
+      console.log("calCommission", calCommission);
+      let wallet = parseFloat(user.wallet) + parseFloat(calCommission);
       console.log("wallettt", wallet);
       wallet = wallet.toString();
-      wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
-      let tEarning = parseFloat(user.tEarning) + parseFloat(calCommission)+0.0;
+      let r = wallet.indexOf(".");
+      if (r !== -1) {
+        wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+      }
+
+      let tEarning =
+        parseFloat(user.tEarning) + parseFloat(calCommission);
+      console.log("tEarning before string", tEarning);
       tEarning = tEarning.toString();
-      tEarning = await tEarning.replace(tEarning.slice(tEarning.indexOf(".") + 2), "");
+      let tr = tEarning.indexOf(".");
+      if (tr !== -1) {
+        tEarning = tEarning.replace(tEarning.slice(tEarning.indexOf(".") + 2),"");
+      }
+      console.log("tEarning after string", tEarning);
       let tcomplete = user.tcomplete + 1;
       let changes = {
         perDayAddLimit,

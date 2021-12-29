@@ -6,10 +6,12 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const { unlink } = require("fs");
 const img = path.join(__dirname + "../../../upload/images/");
+const videos = path.join(__dirname + "../../../upload/videos/");
 const axios = require("axios").default;
 const FCM = require("fcm-node");
 const serverKey = process.env.firebase_msg_key;
 const User_Transaction_Schema = require("../../models/Transaction");
+const adminPannelVideo = require("../../models/AdminVideos");
 
 // Fetch user Data for admin without pagination create
 exports.fetchUserData = async (req, res) => {
@@ -42,9 +44,9 @@ exports.fetchUserData = async (req, res) => {
 exports.fetchUserDatas = async (req, res) => {
   try {
     // let status = req.body.status || Inactive
-    const { condition, PageNo } = req.body;
-    // console.log(req.body);
-    if (!condition || !PageNo)
+    const { condition } = req.body;
+    console.log(condition);
+    if (!condition)
       return res
         .status(500)
         .json({ success: "False", error: "Internal Server Error" });
@@ -55,19 +57,19 @@ exports.fetchUserDatas = async (req, res) => {
     if (condition.plan !== "") {
       conditions["plan"] = condition.plan;
     }
-    let paginate = {
-      page: PageNo.page,
-      perPage: PageNo.perPage,
-    };
-    console.log(conditions, "conditions");
+    // let paginate = {
+    //   page: PageNo.page,
+    //   perPage: PageNo.perPage,
+    // };
+    console.log(conditions, "conditions>>>>>>>>");
     let Users = "";
     if (conditions.status || conditions.plan) {
       console.log("enterC");
-      Users = await User_Login_Schema.paginate(conditions, paginate);
-      console.log(paginate);
+      Users = await User_Login_Schema.find(conditions);
+      // console.log(paginate);
     } else {
-      console.log(paginate);
-      Users = await User_Login_Schema.paginate({}, paginate);
+      // console.log(paginate);
+      Users = await User_Login_Schema.find();
     }
     // if (Users.data.length <= 0) {
     //   return res.status(200).json({ success: false, Users: [] });
@@ -91,7 +93,7 @@ exports.bannerCreate = async (req, res) => {
 
     for (let i = 0; i < img.length; i++) {
       let option = {
-        bannerImage: process.env.base + "/banner/" + img[0].filename,
+        bannerImage: process.env.base + "/banner/" + img[i].filename,
       };
       user = await Banner.create(option);
     }
@@ -103,6 +105,54 @@ exports.bannerCreate = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       error: error,
+    });
+  }
+};
+
+// VIDEO UPLOAD
+exports.videoCreate = async (req, res) => {
+  try {
+    let video = req.files;
+    let user = "";
+    if (!video || video.length == 0) return res.json("video not found");
+    console.log("video>>>>>>>", video);
+    for (let i = 0; i < video.length; i++) {
+      let option = {
+        AdminVideo: process.env.base + "/videos/" + video[i].filename,
+        // ImageThumbnailVideo: process.env.base + "/videos/thumbnail.png/"
+      };
+      user = await adminPannelVideo.create(option);
+    }
+
+    // let option = {
+    //   AdminVideo: process.env.base + "/video/" + video[0].filename,
+    // };
+    console.log(user);
+    return res.status(200).json({
+      message: "Video  added Successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+// banner image get---
+exports.findAdminVideo = async (req, res) => {
+  try {
+    console.log("findBannerImage");
+    let videos = await adminPannelVideo.find();
+    if (videos) {
+      // console.log(images);
+      return res.status(200).json({ videos });
+    }
+    return res.status(200).json({ videos: "Not Available" });
+  } catch (error) {
+    console.log("error>>>>>>>",error);
+    return res.status(500).json({
+      message: error.message,
     });
   }
 };
@@ -153,6 +203,24 @@ exports.findBannerImage = async (req, res) => {
   }
 };
 
+// Videos delete--
+exports.VideoDelete = async (req, res) => {
+  try {
+    let file = req.body.file.slice(req.body.file.lastIndexOf("/"));
+    console.log(file);
+    unlink(`${videos}${file}`, (err) => {
+      if (err) console.log(err);
+      console.log("successfully deleted");
+    });
+    let id = req.params.id;
+    let message = await adminPannelVideo.findOneAndRemove({ _id: id });
+    // console.log(del);
+    return res.status(200).json({ message });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+};
+
 // banner image delete--
 exports.ImageDelete = async (req, res) => {
   try {
@@ -191,8 +259,8 @@ exports.createPackage = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-// get packages--
 
+// get packages--
 exports.getPackage = async (req, res) => {
   try {
     console.log("getuserPackage");
@@ -207,7 +275,6 @@ exports.getPackage = async (req, res) => {
 };
 
 // delete packages--
-
 exports.packageDelete = async (req, res) => {
   try {
     let id = req.params.id;

@@ -3,6 +3,7 @@ const router = express.Router();
 const ValidateAdmin = require("../middleware/validateAdmin");
 const fetchFromAdmin = require("../controllers/fetchFromAdmin");
 const upload = require("../../util/multer");
+const uploadVideos = require("../../util/multerForVideo");
 const fetchuser = require("../middleware/fetchuser");
 const ReferAmount = require("../../models/ReferModal");
 const User_Login_Schema = require("../../models/User_Login");
@@ -25,7 +26,7 @@ router.post("/validator", ValidateAdmin, async (req, res) => {
     const AUsers = await User_Login_Schema.paginate(Aconditions, paginate);
     const InUsers = await User_Login_Schema.paginate(InAconditions, paginate);
     console.log(AUsers.data, AUsers.data.length);
-    // console.log(InUsers.data);
+    console.log(InUsers.data.length);
     return res.status(200).json({
       message: "token validate",
       active: AUsers.data.length,
@@ -50,6 +51,19 @@ router.get("/userBanners", fetchuser, fetchFromAdmin.findBannerImage);
 
 router.delete("/banner/delete/:id", ValidateAdmin, fetchFromAdmin.ImageDelete);
 
+// ======================Admin Pannel Videos======================
+
+router.get("/AdminVideo", ValidateAdmin, fetchFromAdmin.findAdminVideo);
+router.get("/UserVideo", fetchFromAdmin.findAdminVideo);
+router.post(
+  "/AdminVideo",
+  ValidateAdmin,
+  uploadVideos.array("video"),
+  fetchFromAdmin.videoCreate
+);
+
+router.delete("/AdminVideo/:id", ValidateAdmin, fetchFromAdmin.VideoDelete);
+
 // ======================Packages======================
 // create package
 router.post("/createpackage", ValidateAdmin, fetchFromAdmin.createPackage);
@@ -60,7 +74,7 @@ router.get("/getpackages", fetchuser, fetchFromAdmin.getPackage);
 // get all packages by admin
 router.get("/getpackagesbyadmin", ValidateAdmin, fetchFromAdmin.getPackage);
 
-router.get("/fetchReferAmount",ValidateAdmin, async (req, res) => {
+router.get("/fetchReferAmount", ValidateAdmin, async (req, res) => {
   try {
     // let result = await ReferAmount.create({ refer: 5 });
     const refervalue = await ReferAmount.find();
@@ -74,13 +88,13 @@ router.get("/fetchReferAmount",ValidateAdmin, async (req, res) => {
         };
       }
     });
-    console.log(typeof(data.referamt),"here")
+    console.log(typeof data.referamt, "here");
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
-router.put("/editReferAmount/:id",ValidateAdmin, async (req, res) => {
+router.put("/editReferAmount/:id", ValidateAdmin, async (req, res) => {
   try {
     // let result = await ReferAmount.create({ refer: 5 });
     const refer = req.body;
@@ -118,11 +132,11 @@ router.delete(
 // packages update
 router.put("/package/update/:id", ValidateAdmin, fetchFromAdmin.packageUpdate);
 
-// ==================User---------
+// ==================User==================
 
 router.put("/user/update/:id", ValidateAdmin, fetchFromAdmin.userUpdate);
 
-// ==================Notification---------
+// ==================Notification==================
 
 router.post("/notification/:id", ValidateAdmin, fetchFromAdmin.notification);
 router.post(
@@ -131,6 +145,7 @@ router.post(
   fetchFromAdmin.pushNotificationToAll
 );
 
+// ==================User Forget Apis==================
 // user forget password
 router.put("/user/forget", fetchFromAdmin.userForgetPass);
 router.put("/user/checkOtp", fetchFromAdmin.checkotp);
