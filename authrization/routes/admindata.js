@@ -18,19 +18,18 @@ router.post("/userDetail/:_id", ValidateAdmin, fetchFromAdmin.userDetail);
 router.post("/validator", ValidateAdmin, async (req, res) => {
   try {
     console.log("token validate");
-    let Aconditions = { status: "active" };
-    let InAconditions = { status: "InActive" };
+    // let Aconditions = { status: "active" };
+    // let InAconditions = { status: "InActive" };
     let paginate = {
       select: ["-password", "-otp"],
     };
-    const AUsers = await User_Login_Schema.paginate(Aconditions, paginate);
-    const InUsers = await User_Login_Schema.paginate(InAconditions, paginate);
-    console.log(AUsers.data, AUsers.data.length);
-    console.log(InUsers.data.length);
+    const AUsers = await User_Login_Schema.find();
+    // const InUsers = await User_Login_Schema.paginate(InAconditions, paginate);
+    console.log("AUsers>>>>", AUsers.length);
+    // console.log(InUsers.data.length);
     return res.status(200).json({
       message: "token validate",
-      active: AUsers.data.length,
-      InActive: InUsers.data.length,
+      AUsers,
     });
   } catch (error) {
     return res.json({ error: error.message });
