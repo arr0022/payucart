@@ -170,7 +170,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
 // About page URL
 app.get("/about", (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com/about");
+    return res.redirect("http://www.adsgrocy.com/about");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -188,7 +188,7 @@ app.get("/app-ads.txt", (req, res) => {
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com/TermAndCondition");
+    return res.redirect("http://www.adsgrocy.com/TermAndCondition");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
@@ -199,7 +199,7 @@ app.get("/term&condition", async (req, res) => {
 // About privacy URL
 app.get("/privacy", async (req, res) => {
   try {
-    return res.redirect("http://www.payucart.com/privacy");
+    return res.redirect("http://www.adsgrocy.com/privacy");
     // console.log(response.data);
   } catch (error) {
     console.error(e);
