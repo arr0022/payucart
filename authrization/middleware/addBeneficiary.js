@@ -35,7 +35,7 @@ exports.authorize = (req, res, next) => {
     })
     .catch(function (e) {
       console.error(e);
-      return res.json({ e });
+      return res.status(500).json({error: "Internal Server Error"});
     });
 };
 
@@ -58,7 +58,7 @@ exports.verify = async (req, res, next) => {
     .catch(function (er) {
       console.log("response not verify");
       console.error(er);
-      return res.json({ er });
+      return res.status(500).json({error: "Internal Server Error"});
     });
 };
 
@@ -190,7 +190,7 @@ exports.createBeneficiary = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    return res.status(400).json({ error: err.message });
+    return res.status(500).json({error: "Internal Server Error"});
   }
 };
 
@@ -270,7 +270,7 @@ exports.PayU = async (req, res) => {
     return res.status(500).json({ error: "Internal Server error" });
   } catch (error) {
     console.error(error, "ethis");
-    return res.status(500).json({ error });
+    return res.status(500).json({error: "Internal Server Error"});
   }
 };
 
