@@ -170,7 +170,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
 // About page URL
 app.get("/about", (req, res) => {
   try {
-    return res.redirect("http://www.adsgrocy.com/about");
+    return res.redirect("http://www.adsgrocy.com/AboutPage");
     // console.log(response.data);
   } catch (error) {
     console.error(error);
