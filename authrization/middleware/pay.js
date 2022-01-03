@@ -40,7 +40,7 @@ exports.verify = async (req, res, next) => {
     }
     return next();
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e });
   }
 };
 
@@ -92,7 +92,7 @@ exports.createOrder = async (req, res, next) => {
     return next();
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error });
   }
 };
 
@@ -106,6 +106,6 @@ exports.getOrderLink = async (req, res, next) => {
     return res.status(200).json(orderLink);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e });
   }
 };

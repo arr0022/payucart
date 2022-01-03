@@ -3,8 +3,8 @@ const Admin_Login_Schema = require("../../models/Admin_Login");
 
 const ValidateAdmin = async (req, res, next) => {
   // console.log(req.header('auth-token'), "header");
-  const token = req.header("auth-token");
   try {
+    const token = req.header("auth-token");
     if (!token) {
       return res
         .status(401)
@@ -19,8 +19,8 @@ const ValidateAdmin = async (req, res, next) => {
     }
     return next();
   } catch (error) {
-    return res.status(401).json({
-      error: error.message || "Please authenticate using a valid token",
+    return res.status(500).json({
+      error: error || "Please authenticate using a valid token",
     });
   }
 };

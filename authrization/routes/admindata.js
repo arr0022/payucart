@@ -32,7 +32,7 @@ router.post("/validator", ValidateAdmin, async (req, res) => {
       AUsers,
     });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error});
   }
 });
 
@@ -118,6 +118,7 @@ router.post("/creater", async (req, res) => {
     res.status(200).json({ response });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({error})
   }
 });
 
