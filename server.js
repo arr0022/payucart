@@ -101,7 +101,7 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(500).render("failed");
+    return res.status(200).render("failed");
   }
 });
 
@@ -110,7 +110,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
   try {
     // console.log(req);
     console.log("AFTER Wallet");
-    const pg = await new PaymentGateway({
+    const pg = new PaymentGateway({
       env: config.enviornment,
       apiVersion: "1.0.0",
       appId: process.env.PG_App_ID,
@@ -162,7 +162,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error });
+    return res.status(200).render("failed");
     // res.status(400).json({ error: error.message });
   }
 });
@@ -287,7 +287,6 @@ app.use(express.static(path.resolve(__dirname, "./build")));
 
 // Handle GET requests to /api route
 // app.get("/api", (req, res) => {
-//   res.json({ message: "Hello from server!" });
 // });
 
 // All other GET requests not handled before will return our React app
