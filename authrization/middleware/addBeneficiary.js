@@ -185,7 +185,7 @@ exports.createBeneficiary = async (req, res) => {
     } else {
       console.log(response.data, "response.data");
       return res
-        .status(response.data.subCode)
+        .status(400)
         .json({ User_Beneficiary: response.data.message });
     }
   } catch (error) {
