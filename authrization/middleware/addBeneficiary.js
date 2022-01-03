@@ -12,13 +12,6 @@ const options = {
   url: `${testUrl}/payout/v1/authorize`,
   headers: {
     Accept: "application/json",
-    // "X-Cf-Signature": `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA42KC4u3XM9KpVv7p7Gwr
-    // /4WnJZSlCHrwUMW4YCATUnHVmonE6l5iGoAfBqFtXIB5EmCdAPT1XaPly0phHzdh
-    // TZMkhwkf+iPbSzO43/WjL3PDlyjFxyCb5yvDK+xvu6VEFW/X7IhAnI6i+tTIx8td
-    // iNzl4CiFARvN/qOvHquK22Qb7Hy8HwNtN3PWUDtYpwUa+7iJ8Zx0JxLvJS7oe1U8
-    // Cv9XNAuLdwVLl+2qgr04+LhFBBN/48UzRPutPcKJ04+0XLM23g/QH7xLcgMio8HC
-    // 9H1lFal9+Uj+KGv4kGsul0B616tItOnIwKjc1rANznAHu6oRqdsAPfgUoz0pe+hf
-    // ywIDAQAB`,
     "X-Client-Secret": process.env.PayClientSecret,
     "X-Client-Id": process.env.PayClientID,
   },
@@ -192,7 +185,7 @@ exports.createBeneficiary = async (req, res) => {
     } else {
       console.log(response.data, "response.data");
       return res
-        .status(response.data.subCode)
+        .status(400)
         .json({ User_Beneficiary: response.data.message });
     }
   } catch (error) {

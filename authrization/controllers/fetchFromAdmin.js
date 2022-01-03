@@ -245,7 +245,7 @@ exports.createPackage = async (req, res) => {
     console.log(result);
     return res.status(200).json({ message: "package created" });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error });
   }
 };
 

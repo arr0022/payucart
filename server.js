@@ -38,7 +38,7 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
   try {
     // console.log(req);
     console.log("AFTER");
-    const pg = await new PaymentGateway({
+    const pg =  new PaymentGateway({
       env: config.enviornment,
       apiVersion: "1.0.0",
       appId: process.env.PG_App_ID,
@@ -170,7 +170,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
 // About page URL
 app.get("/about", (req, res) => {
   try {
-    return res.redirect("http://www.adsgrocy.com/about");
+    return res.redirect("http://www.adsgrocy.com/AboutPage");
     // console.log(response.data);
   } catch (error) {
     console.error(error);
