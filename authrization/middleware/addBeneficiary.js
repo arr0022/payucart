@@ -12,6 +12,13 @@ const options = {
   url: `${testUrl}/payout/v1/authorize`,
   headers: {
     Accept: "application/json",
+    // "X-Cf-Signature": `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA42KC4u3XM9KpVv7p7Gwr
+    // /4WnJZSlCHrwUMW4YCATUnHVmonE6l5iGoAfBqFtXIB5EmCdAPT1XaPly0phHzdh
+    // TZMkhwkf+iPbSzO43/WjL3PDlyjFxyCb5yvDK+xvu6VEFW/X7IhAnI6i+tTIx8td
+    // iNzl4CiFARvN/qOvHquK22Qb7Hy8HwNtN3PWUDtYpwUa+7iJ8Zx0JxLvJS7oe1U8
+    // Cv9XNAuLdwVLl+2qgr04+LhFBBN/48UzRPutPcKJ04+0XLM23g/QH7xLcgMio8HC
+    // 9H1lFal9+Uj+KGv4kGsul0B616tItOnIwKjc1rANznAHu6oRqdsAPfgUoz0pe+hf
+    // ywIDAQAB`,
     "X-Client-Secret": process.env.PayClientSecret,
     "X-Client-Id": process.env.PayClientID,
   },
@@ -19,11 +26,11 @@ const options = {
 
 exports.authorize = (req, res, next) => {
   console.log("aenter");
-  // console.log(testUrl);
+  console.log(options);
   axios
     .request(options)
     .then(function (response) {
-      console.log(response.data);
+      console.log("26", response.data);
       if (response.data.subCode === "403") {
         return res.status(500).json({ error: "Internal server error" });
       }
@@ -35,12 +42,13 @@ exports.authorize = (req, res, next) => {
     })
     .catch(function (error) {
       // console.error(e);
-      return res.status(500).json({error});
+      return res.status(500).json({ error });
     });
 };
 
 exports.verify = async (req, res, next) => {
   console.log("venter");
+  console.log(options);
   axios
     .request({
       method: "POST",
@@ -58,7 +66,7 @@ exports.verify = async (req, res, next) => {
     .catch(function (error) {
       console.log("response not verify");
       // console.error(er);
-      return res.status(500).json({error})
+      return res.status(500).json({ error });
     });
 };
 
@@ -91,7 +99,7 @@ exports.validateBeneficiary = async (req, res, next) => {
     return next();
   } catch (error) {
     // console.log(e.message);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -188,7 +196,7 @@ exports.createBeneficiary = async (req, res) => {
     }
   } catch (error) {
     // console.log(err);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -214,8 +222,8 @@ exports.PayU = async (req, res) => {
     const user = await User_Login_Schema.findOne({ _id }).select("-password");
     console.log(user);
 
-    let WithdrawAmt = parseInt(amount);
-    let walletBal = parseInt(user.wallet);
+    let WithdrawAmt = parseFloat(amount);
+    let walletBal = parseFloat(user.wallet);
 
     if (WithdrawAmt > walletBal && walletBal !== WithdrawAmt) {
       return res.status(400).json({
@@ -225,9 +233,7 @@ exports.PayU = async (req, res) => {
       });
     }
     WithdrawAmt = parseFloat(amount);
-    const trId = Math.floor(
-      Math.random() * 137461805669728 * WithdrawAmt
-    );
+    const trId = Math.floor(Math.random() * 137461805669728 * WithdrawAmt);
     const transferId = trId.toString();
     const remarks = `Withdraw from wallet`;
     console.log(beneId, WithdrawAmt, transferId, transferMode, remarks);
@@ -248,9 +254,12 @@ exports.PayU = async (req, res) => {
     }
     console.log("after");
     // let users = await _id;
-    let wallet = (
-      parseInt(user.wallet) - parseInt(WithdrawAmt)
-    ).toString();
+    let wallet = parseFloat(user.wallet) - parseFloat(WithdrawAmt);
+    wallet = wallet.toString();
+    let r = wallet.indexOf(".");
+    if (r !== -1) {
+      wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+    }
     let walletUser = await User_Login_Schema.findOneAndUpdate(
       { _id },
       { wallet },
@@ -268,7 +277,7 @@ exports.PayU = async (req, res) => {
     return res.status(500).json({ error: "Internal Server error" });
   } catch (error) {
     // console.error(error, "ethis");
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
