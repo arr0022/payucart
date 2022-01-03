@@ -12,33 +12,34 @@ const FCM = require("fcm-node");
 const serverKey = process.env.firebase_msg_key;
 const User_Transaction_Schema = require("../../models/Transaction");
 const adminPannelVideo = require("../../models/AdminVideos");
+const { resolveSoa } = require("dns");
 
 // Fetch user Data for admin without pagination create
-exports.fetchUserData = async (req, res) => {
-  try {
-    // console.log(req.params.search)
-    // let a = await /(req.params.search)/i
-    // let b = await "/".concat(a,"/i")
-    // console.log(b, "befor")
-    // b = await JSON.parse(JSON.stringify(b))
-    // let regex = new RegExp("#" + a + "#", "i")
-    let regex = new RegExp(`${req.params.search}`, "ig");
-    // console.log(regex, "after")
-    const Users = await User_Login_Schema.find({ name: regex }).select(
-      "-password"
-    );
-    if (Users.length <= 0) {
-      return res.status(200).json({ success: false, Users: [] });
-    }
-    return res.json({ Users });
-  } catch (error) {
-    let success = false;
-    console.error(error.message);
-    return res
-      .status(500)
-      .json(`${success}: ${error.message} || Internal Server Error`);
-  }
-};
+// exports.fetchUserData = async (req, res) => {
+//   try {
+//     // console.log(req.params.search)
+//     // let a = await /(req.params.search)/i
+//     // let b = await "/".concat(a,"/i")
+//     // console.log(b, "befor")
+//     // b = await JSON.parse(JSON.stringify(b))
+//     // let regex = new RegExp("#" + a + "#", "i")
+//     let regex = new RegExp(`${req.params.search}`, "ig");
+//     // console.log(regex, "after")
+//     const Users = await User_Login_Schema.find({ name: regex }).select(
+//       "-password"
+//     );
+//     if (Users.length <= 0) {
+//       return res.status(200).json({ success: false, Users: [] });
+//     }
+//     return res.json({ Users });
+//   } catch (error) {
+//     let success = false;
+//     console.error(error.message);
+//     return res
+//       .status(500)
+//       .json(`${success}: ${error.message} || Internal Server Error`);
+//   }
+// };
 
 // Fetch user Data for admin with pagination create
 exports.fetchUserDatas = async (req, res) => {
@@ -77,10 +78,8 @@ exports.fetchUserDatas = async (req, res) => {
     return res.status(200).json(Users);
   } catch (error) {
     let success = false;
-    console.error(error.message);
-    return res
-      .status(500)
-      .json(`${success}: ${error.message} || Internal Server Error`);
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -88,7 +87,7 @@ exports.fetchUserDatas = async (req, res) => {
 exports.bannerCreate = async (req, res) => {
   try {
     let img = req.files;
-    if (!img || img.length == 0) return res.json("image not found");
+    if (!img || img.length == 0) return res.status(400).json("image not found");
     console.log(img.length);
 
     for (let i = 0; i < img.length; i++) {
@@ -103,9 +102,7 @@ exports.bannerCreate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -133,9 +130,7 @@ exports.videoCreate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -151,9 +146,7 @@ exports.findAdminVideo = async (req, res) => {
     return res.status(200).json({ videos: "Not Available" });
   } catch (error) {
     console.log("error>>>>>>>",error);
-    return res.status(500).json({
-      message: error.message,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -180,10 +173,8 @@ exports.userDetail = async (req, res) => {
     }
   } catch (error) {
     let success = false;
-    console.error(error.message);
-    return res
-      .status(500)
-      .json(`${success}: ${error.message} || Internal Server Error`);
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -197,9 +188,7 @@ exports.findBannerImage = async (req, res) => {
       return res.status(200).json({ images });
     }
   } catch (error) {
-    return res.json({
-      message: error.message,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -268,9 +257,7 @@ exports.getPackage = async (req, res) => {
     // console.log(packagess);
     return res.status(200).json({ packagess });
   } catch (error) {
-    return res.json({
-      error: error.message,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -284,9 +271,7 @@ exports.packageDelete = async (req, res) => {
       message: "package deleted",
     });
   } catch (error) {
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -309,9 +294,7 @@ exports.packageUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "package updated" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -335,9 +318,7 @@ exports.userUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "User updated" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -372,7 +353,7 @@ exports.notification = async (req, res) => {
     });
   } catch (error) {
     console.log("error in notification", error);
-    return res.status(400).json({ error: error });
+    return res.status(500).json({error})
   }
 };
 
@@ -446,9 +427,7 @@ exports.userForgetPass = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ error: error.message || "Internal server error" });
+    return res.status(500).json({error})
   }
 };
 
@@ -475,9 +454,7 @@ exports.checkotp = async (req, res) => {
     return res.json({ message: "not found" });
   } catch (error) {
     console.log(error);
-    return res.json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -488,7 +465,7 @@ exports.createNewPassword = async (req, res) => {
     // const { _id } = req.user
     if (!mobile) return res.status(401).json({ error: "unauthorised user" });
     if (!confrimPassword || !password)
-      return res.json({ error: "please enter valid feilds" });
+      return res.status(500).json({ error: "please enter valid feilds" });
     if (confrimPassword !== password) {
       return res
         .status(500)
@@ -516,9 +493,7 @@ exports.createNewPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -546,8 +521,8 @@ exports.changePassword = async (req, res) => {
         let result = await User_Login_Schema.findByIdAndUpdate(
           { _id: user_id },
           { password: secretPassword }
-        ).catch((err) => {
-          return res.status(500).json({ message: "something went wrong" });
+        ).catch((error) => {
+          return res.status(500).json({error})
         });
         return res.status(200).json({
           message: "password successfully updated",
@@ -594,11 +569,13 @@ exports.pushNotification = async (req, res) => {
       .then((res) => {
         console.log("send :");
       })
-      .catch((err) => {
+      .catch((error) => {
         console.log("err");
+        return res.status(500).json({error})
       });
   } catch (error) {
     console.log("err");
+    return res.status(500).json({error})
   }
 };
 
@@ -634,6 +611,7 @@ exports.pushNotificationToAll = async (req, res) => {
     return res.status(400).json({ error: "not send successfully" });
   } catch (error) {
     console.log("err");
+    return res.status(500).json({error})
   }
 };
 
@@ -644,6 +622,6 @@ const percentage = async (payload, req, res) => {
     const commission = ((await plan) * comm) / 100;
     return commission;
   } catch (error) {
-    return res.status(400).json({ error });
+   return res.status(500).json({error});
   }
 };

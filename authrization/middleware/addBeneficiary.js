@@ -33,9 +33,9 @@ exports.authorize = (req, res, next) => {
       return next();
       // res.json({response: response.data})
     })
-    .catch(function (e) {
-      console.error(e);
-      return res.json({ e });
+    .catch(function (error) {
+      // console.error(e);
+      return res.status(500).json({error});
     });
 };
 
@@ -55,10 +55,10 @@ exports.verify = async (req, res, next) => {
       console.log(response.data);
       next();
     })
-    .catch(function (er) {
+    .catch(function (error) {
       console.log("response not verify");
-      console.error(er);
-      return res.json({ er });
+      // console.error(er);
+      return res.status(500).json({error})
     });
 };
 
@@ -89,11 +89,9 @@ exports.validateBeneficiary = async (req, res, next) => {
     }
     console.log("not beneficiary");
     return next();
-  } catch (e) {
-    console.log(e.message);
-    return res
-      .status(400)
-      .json({ error: e.message || "Need to create Beneficiary Account" });
+  } catch (error) {
+    // console.log(e.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -188,9 +186,9 @@ exports.createBeneficiary = async (req, res) => {
         .status(response.data.subCode)
         .json({ User_Beneficiary: response.data.message });
     }
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    // console.log(err);
+    return res.status(500).json({error})
   }
 };
 
@@ -269,8 +267,8 @@ exports.PayU = async (req, res) => {
     }
     return res.status(500).json({ error: "Internal Server error" });
   } catch (error) {
-    console.error(error, "ethis");
-    return res.status(500).json({ error });
+    // console.error(error, "ethis");
+    return res.status(500).json({error})
   }
 };
 
@@ -285,7 +283,7 @@ exports.PayU = async (req, res) => {
 //         "Content-Type": "application/json",
 //       },
 //     });
-//   } catch (e) {
+//   } catch (error) {
 //     console.log("err caught in getting beneficiary details");
 //     return res
 //       .status(400)

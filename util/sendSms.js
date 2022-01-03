@@ -36,6 +36,6 @@ exports.sendSms = async (otp, number) => {
     }
     return false;
   } catch (error) {
-    return error;
+    return res.status(500).json({error})
   }
 };
