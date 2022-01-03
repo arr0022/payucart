@@ -101,7 +101,7 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(200).render("failed");
+    return res.status(500).render("failed");
   }
 });
 
@@ -127,8 +127,8 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
       let money = response.orderAmount;
       let wallet = parseFloat(user.wallet) + parseFloat(money);
       wallet = wallet.toString();
-      let r = wallet.indexOf(".")
-      if(r!==-1){
+      let r = wallet.indexOf(".");
+      if (r !== -1) {
         wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       }
       let walletUser = await User_Login_Schema.findOneAndUpdate(
@@ -162,7 +162,7 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(200).render("failed");
+    return res.status(500).json({ error });
     // res.status(400).json({ error: error.message });
   }
 });
@@ -173,8 +173,8 @@ app.get("/about", (req, res) => {
     return res.redirect("http://www.adsgrocy.com/about");
     // console.log(response.data);
   } catch (error) {
-    console.error(e);
-    res.status(400).json({ e });
+    console.error(error);
+    res.status(500).json({ e });
   }
 });
 
@@ -183,6 +183,7 @@ app.get("/app-ads.txt", (req, res) => {
     return res.status(200).render("app-ads");
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ error });
   }
 });
 // About term&condition URL
@@ -191,8 +192,8 @@ app.get("/term&condition", async (req, res) => {
     return res.redirect("http://www.adsgrocy.com/TermAndCondition");
     // console.log(response.data);
   } catch (error) {
-    console.error(e);
-    res.status(400).json({ e });
+    console.error(error);
+    return res.status(500).json({ error });
   }
 });
 
@@ -202,8 +203,8 @@ app.get("/privacy", async (req, res) => {
     return res.redirect("http://www.adsgrocy.com/privacy");
     // console.log(response.data);
   } catch (error) {
-    console.error(e);
-    res.status(400).json({ e });
+    console.error(error);
+    return res.status(500).json({ error });
   }
 });
 
@@ -227,14 +228,16 @@ cron.schedule("* * * * *", async () => {
           .then((res) => {
             console.log(res.name, "Plan Expire");
           })
-          .catch((err) => {
-            console.log(err, "err");
+          .catch((error) => {
+            // console.log(err, "err");
+            return res.status(500).json({ error });
           });
         // console.log(changes);
       }
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ error });
   }
 });
 
@@ -253,8 +256,9 @@ cron.schedule("5 5 0 * * *", async () => {
             yEarning: x.tEarning,
           };
         })
-        .catch((err) => {
-          console.log("package err", err);
+        .catch((error) => {
+          console.log("package err", error);
+          return res.status(500).json({ error });
         });
       await User_Login_Schema.findByIdAndUpdate({ _id: x._id }, changes, {
         new: true,
@@ -263,13 +267,14 @@ cron.schedule("5 5 0 * * *", async () => {
           console.log(res, "addlimit");
           console.log(changes);
         })
-        .catch((err) => {
-          console.log(err, "err");
+        .catch((error) => {
+          console.log(error, "err");
         });
       // console.log(changes);
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ error });
   }
 });
 

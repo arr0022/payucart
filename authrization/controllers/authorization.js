@@ -47,10 +47,8 @@ exports.create = async (req, res) => {
     return res.status(200).json({ success, authtoken });
   } catch (error) {
     let success = false;
-    console.error(error.message);
-    return res
-      .status(500)
-      .json(`${success}: ${error.message} || Internal Server Error`);
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -86,11 +84,8 @@ exports.getBeneficiaryByNo = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -158,11 +153,8 @@ exports.login = async (req, res) => {
     console.log({ success, authtoken });
     return res.status(200).json({ success, authtoken });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -181,11 +173,8 @@ exports.getBeneficiary = async (req, res) => {
     // console.log(user);
     return res.status(200).json(beneficiary);
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -207,11 +196,8 @@ exports.getuser = async (req, res) => {
     console.log("updateuser", user);
     return res.status(200).json(user);
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -229,11 +215,8 @@ exports.getwallet = async (req, res) => {
     // console.log(userTransaction);
     return res.status(200).json(userTransaction);
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -252,11 +235,8 @@ exports.getuserfornext = async (req, res, next) => {
       return next();
     }
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -266,11 +246,8 @@ exports.getAdmin = async (req, res) => {
     const user = await Admin_Login_Schema.findById(userId).select("-password");
     return res.status(200).json(user);
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -361,11 +338,8 @@ exports.refer = async (req, res) => {
       .status(400)
       .json({ success: true, message: "Internal Server Error" });
   } catch (error) {
-    console.error(error.message);
-    res.status(400).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    // console.error(error.message);
+    return res.status(500).json({error})
   }
 };
 
@@ -447,9 +421,7 @@ exports.editProfile = async (req, res) => {
     return res.status(200).json({ message: "Profile added Successfully" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      error: error.message,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -546,11 +518,7 @@ exports.reward = async (req, res) => {
       .status(400)
       .json({ success: "false", message: "You Don't Have Active Plan" });
   } catch (error) {
-    res.status(500).json({
-      success: "false",
-      message: "Interwal Server Erro",
-      error: error.message,
-    });
+    return res.status(500).json({error})
   }
 };
 
@@ -572,9 +540,6 @@ exports.getUserPlan = async (req, res) => {
     return res.status(200).json({ success: true, package: packages });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal Server Error",
-    });
+    return res.status(500).json({error})
   }
 };
