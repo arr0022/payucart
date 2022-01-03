@@ -111,7 +111,7 @@ exports.videoCreate = async (req, res) => {
   try {
     let video = req.files;
     let user = "";
-    if (!video || video.length == 0) return res.json("video not found");
+    if (!video || video.length == 0) return res.status(400).json("video not found");
     console.log("video>>>>>>>", video);
     for (let i = 0; i < video.length; i++) {
       let option = {
