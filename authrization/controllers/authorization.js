@@ -43,7 +43,6 @@ exports.create = async (req, res) => {
     const authtoken = verifyAccessToken(data, expiry);
 
     let success = true;
-    // res.json(user)
     return res.status(200).json({ success, authtoken });
   } catch (error) {
     let success = false;
@@ -149,7 +148,6 @@ exports.login = async (req, res) => {
     const authtoken = await verifyAccessToken(data, expiry);
 
     let success = true;
-    // res.json(user)
     console.log({ success, authtoken });
     return res.status(200).json({ success, authtoken });
   } catch (error) {

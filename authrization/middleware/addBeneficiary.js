@@ -47,6 +47,7 @@ exports.authorize = (req, res, next) => {
 };
 
 exports.verify = async (req, res, next) => {
+  // trycatch
   console.log("venter");
   console.log(options);
   axios

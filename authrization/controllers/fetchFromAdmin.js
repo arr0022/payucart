@@ -451,7 +451,7 @@ exports.checkotp = async (req, res) => {
         return res.status(404).json({ message: "opt not verified" });
       }
     }
-    return res.json({ message: "not found" });
+    return res.status(500).json({ message: "not found" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({error})
