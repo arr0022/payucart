@@ -12,33 +12,34 @@ const FCM = require("fcm-node");
 const serverKey = process.env.firebase_msg_key;
 const User_Transaction_Schema = require("../../models/Transaction");
 const adminPannelVideo = require("../../models/AdminVideos");
+const { resolveSoa } = require("dns");
 
 // Fetch user Data for admin without pagination create
-exports.fetchUserData = async (req, res) => {
-  try {
-    // console.log(req.params.search)
-    // let a = await /(req.params.search)/i
-    // let b = await "/".concat(a,"/i")
-    // console.log(b, "befor")
-    // b = await JSON.parse(JSON.stringify(b))
-    // let regex = new RegExp("#" + a + "#", "i")
-    let regex = new RegExp(`${req.params.search}`, "ig");
-    // console.log(regex, "after")
-    const Users = await User_Login_Schema.find({ name: regex }).select(
-      "-password"
-    );
-    if (Users.length <= 0) {
-      return res.status(200).json({ success: false, Users: [] });
-    }
-    return res.json({ Users });
-  } catch (error) {
-    let success = false;
-    console.error(error.message);
-    return res
-      .status(500)
-      .json(`${success}: ${error.message} || Internal Server Error`);
-  }
-};
+// exports.fetchUserData = async (req, res) => {
+//   try {
+//     // console.log(req.params.search)
+//     // let a = await /(req.params.search)/i
+//     // let b = await "/".concat(a,"/i")
+//     // console.log(b, "befor")
+//     // b = await JSON.parse(JSON.stringify(b))
+//     // let regex = new RegExp("#" + a + "#", "i")
+//     let regex = new RegExp(`${req.params.search}`, "ig");
+//     // console.log(regex, "after")
+//     const Users = await User_Login_Schema.find({ name: regex }).select(
+//       "-password"
+//     );
+//     if (Users.length <= 0) {
+//       return res.status(200).json({ success: false, Users: [] });
+//     }
+//     return res.json({ Users });
+//   } catch (error) {
+//     let success = false;
+//     console.error(error.message);
+//     return res
+//       .status(500)
+//       .json(`${success}: ${error.message} || Internal Server Error`);
+//   }
+// };
 
 // Fetch user Data for admin with pagination create
 exports.fetchUserDatas = async (req, res) => {
@@ -88,7 +89,7 @@ exports.fetchUserDatas = async (req, res) => {
 exports.bannerCreate = async (req, res) => {
   try {
     let img = req.files;
-    if (!img || img.length == 0) return res.json("image not found");
+    if (!img || img.length == 0) return res.status(400).json("image not found");
     console.log(img.length);
 
     for (let i = 0; i < img.length; i++) {
@@ -197,7 +198,7 @@ exports.findBannerImage = async (req, res) => {
       return res.status(200).json({ images });
     }
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -475,7 +476,7 @@ exports.checkotp = async (req, res) => {
     return res.json({ message: "not found" });
   } catch (error) {
     console.log(error);
-    return res.json({
+    return res.status(500).json({
       error: error,
     });
   }
@@ -488,7 +489,7 @@ exports.createNewPassword = async (req, res) => {
     // const { _id } = req.user
     if (!mobile) return res.status(401).json({ error: "unauthorised user" });
     if (!confrimPassword || !password)
-      return res.json({ error: "please enter valid feilds" });
+      return res.status(500).json({ error: "please enter valid feilds" });
     if (confrimPassword !== password) {
       return res
         .status(500)
