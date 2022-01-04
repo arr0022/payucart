@@ -275,7 +275,7 @@ exports.refer = async (req, res) => {
       refervalue.map((x, n) => {
         if (n === 0) referinr = x.refer;
       });
-      let wallet = parseFloat(referinr) + parseFloat(user.wallet) + 0.1;
+      let wallet = parseFloat(referinr) + parseFloat(user.wallet);
       console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
       let r = wallet.indexOf(".")
@@ -304,13 +304,13 @@ exports.refer = async (req, res) => {
         amount,
       });
       console.log("Before Convert wallet.>>>>", findRefer.wallet);
-      wallet = parseFloat(findRefer.wallet) + parseFloat(referinr) + 0.1;
+      wallet = parseFloat(findRefer.wallet) + parseFloat(referinr);
       console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
       console.log("After String wallet.>>>>", wallet);
       let r1 = wallet.indexOf(".")
       if(r1!==-1){
-        wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+        wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       }
       console.log("wallet.>>>>", wallet);
       let refercode = await User_Login_Schema.findOneAndUpdate(
