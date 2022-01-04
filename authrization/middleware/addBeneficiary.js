@@ -31,7 +31,6 @@ exports.authorize = (req, res, next) => {
       req.url = `${testUrl}/payout/v1/verifyToken`;
       req.token = response.data.data.token;
       return next();
-      // res.json({response: response.data})
     })
     .catch(function (error) {
       // console.error(e);
@@ -68,7 +67,7 @@ exports.validateBeneficiary = async (req, res, next) => {
   try {
     console.log("validateBeneficiary", req.body);
     const { _id } = req.user;
-    const id = await _id.toString();
+    const id =  _id.toString();
     console.log(id);
     req.user.id = id;
     let beneficiary = await User_Beneficiary.findOne({ beneId: id });
@@ -186,7 +185,7 @@ exports.createBeneficiary = async (req, res) => {
       console.log(response.data, "response.data");
       return res
         .status(400)
-        .json({ User_Beneficiary: response.data.message });
+        .json({ message: response.data.message });
     }
   } catch (error) {
     // console.log(err);
@@ -244,7 +243,7 @@ exports.PayU = async (req, res) => {
 
     if (!response) {
       console.log(response.data);
-      return res.status(500).json({ error: "Internal Server pay error" });
+      return res.status(500).json({ error: "Internal Server error" });
     }
     console.log("after");
     // let users = await _id;

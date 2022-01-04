@@ -79,7 +79,7 @@ exports.fetchUserDatas = async (req, res) => {
   } catch (error) {
     let success = false;
     // console.error(error.message);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -102,7 +102,7 @@ exports.bannerCreate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -111,7 +111,8 @@ exports.videoCreate = async (req, res) => {
   try {
     let video = req.files;
     let user = "";
-    if (!video || video.length == 0) return res.json("video not found");
+    if (!video || video.length == 0)
+      return res.status(400).json("video not found");
     console.log("video>>>>>>>", video);
     for (let i = 0; i < video.length; i++) {
       let option = {
@@ -130,7 +131,7 @@ exports.videoCreate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -145,8 +146,8 @@ exports.findAdminVideo = async (req, res) => {
     }
     return res.status(200).json({ videos: "Not Available" });
   } catch (error) {
-    console.log("error>>>>>>>",error);
-    return res.status(500).json({error})
+    console.log("error>>>>>>>", error);
+    return res.status(500).json({ error });
   }
 };
 
@@ -174,7 +175,7 @@ exports.userDetail = async (req, res) => {
   } catch (error) {
     let success = false;
     // console.error(error.message);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -188,7 +189,7 @@ exports.findBannerImage = async (req, res) => {
       return res.status(200).json({ images });
     }
   } catch (error) {
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -257,7 +258,7 @@ exports.getPackage = async (req, res) => {
     // console.log(packagess);
     return res.status(200).json({ packagess });
   } catch (error) {
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -271,7 +272,7 @@ exports.packageDelete = async (req, res) => {
       message: "package deleted",
     });
   } catch (error) {
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -294,7 +295,7 @@ exports.packageUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "package updated" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -318,7 +319,7 @@ exports.userUpdate = async (req, res) => {
     if (result) return res.status(201).json({ message: "User updated" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -353,7 +354,7 @@ exports.notification = async (req, res) => {
     });
   } catch (error) {
     console.log("error in notification", error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -368,25 +369,29 @@ const digits = (num, count) => {
 };
 
 const otpGenerate = async (req, res) => {
-  var otp = Math.floor(10000 + Math.random() * 900000);
-  let count = 0;
-  count = await digits(otp, count);
-  console.log(count);
-  if (count === 6) {
-    return otp;
-  } else {
-    if (count === 7) {
-      otp = otp - 1000000;
-    }
-    if (count === 5) {
-      otp = (await otp) + 100000;
-    }
-    count = 0;
+  try {
+    var otp = Math.floor(10000 + Math.random() * 900000);
+    let count = 0;
     count = await digits(otp, count);
+    console.log(count);
     if (count === 6) {
       return otp;
+    } else {
+      if (count === 7) {
+        otp = otp - 1000000;
+      }
+      if (count === 5) {
+        otp = otp + 100000;
+      }
+      count = 0;
+      count = await digits(otp, count);
+      if (count === 6) {
+        return otp;
+      }
+      return res.status(400).json({ error: "Please retry" });
     }
-    return res.status(400).json({ error: "Please retry" });
+  } catch (error) {
+    return res.status(500).json({ error });
   }
 };
 
@@ -427,7 +432,7 @@ exports.userForgetPass = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -454,7 +459,7 @@ exports.checkotp = async (req, res) => {
     return res.status(500).json({ message: "not found" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -493,7 +498,7 @@ exports.createNewPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -522,7 +527,7 @@ exports.changePassword = async (req, res) => {
           { _id: user_id },
           { password: secretPassword }
         ).catch((error) => {
-          return res.status(500).json({error})
+          return res.status(500).json({ error });
         });
         return res.status(200).json({
           message: "password successfully updated",
@@ -571,11 +576,11 @@ exports.pushNotification = async (req, res) => {
       })
       .catch((error) => {
         console.log("err");
-        return res.status(500).json({error})
+        return res.status(500).json({ error });
       });
   } catch (error) {
     console.log("err");
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -611,7 +616,7 @@ exports.pushNotificationToAll = async (req, res) => {
     return res.status(400).json({ error: "not send successfully" });
   } catch (error) {
     console.log("err");
-    return res.status(500).json({error})
+    return res.status(500).json({ error });
   }
 };
 
@@ -622,6 +627,6 @@ const percentage = async (payload, req, res) => {
     const commission = ((await plan) * comm) / 100;
     return commission;
   } catch (error) {
-   return res.status(500).json({error});
+    return res.status(500).json({ error });
   }
 };

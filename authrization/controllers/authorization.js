@@ -209,7 +209,7 @@ exports.getwallet = async (req, res) => {
     if (!userTransaction)
       return res
         .status(401)
-        .json({ userTransaction: "user doesn't have any ransaction" });
+        .json({ userTransaction: "user doesn't have any transaction" });
     // console.log(userTransaction);
     return res.status(200).json(userTransaction);
   } catch (error) {
@@ -275,7 +275,7 @@ exports.refer = async (req, res) => {
       refervalue.map((x, n) => {
         if (n === 0) referinr = x.refer;
       });
-      let wallet = parseFloat(referinr) + parseFloat(user.wallet) + 0.1;
+      let wallet = parseFloat(referinr) + parseFloat(user.wallet);
       console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
       let r = wallet.indexOf(".")
@@ -297,20 +297,20 @@ exports.refer = async (req, res) => {
         return res.status(400).json({ error: "Internal Server Error" });
 
       let amount = referinr;
-      let remark = `reward for refer a user`;
+      let remark = `Reward For Entering Friend Code`;
       let addTransaction = await User_Transaction_Schema.create({
         users: userId.toString(),
         remark,
         amount,
       });
       console.log("Before Convert wallet.>>>>", findRefer.wallet);
-      wallet = parseFloat(findRefer.wallet) + parseFloat(referinr) + 0.1;
+      wallet = parseFloat(findRefer.wallet) + parseFloat(referinr);
       console.log("Before String wallet.>>>>", wallet);
       wallet = wallet.toString();
       console.log("After String wallet.>>>>", wallet);
       let r1 = wallet.indexOf(".")
       if(r1!==-1){
-        wallet = await wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
+        wallet = wallet.replace(wallet.slice(wallet.indexOf(".") + 2), "");
       }
       console.log("wallet.>>>>", wallet);
       let refercode = await User_Login_Schema.findOneAndUpdate(
@@ -324,7 +324,7 @@ exports.refer = async (req, res) => {
         console.log(refercode);
         addTransaction = await User_Transaction_Schema.create({
           users: refercode._id.toString(),
-          remark,
+          remark: `Reward for refer a user`,
           amount,
         });
       }
