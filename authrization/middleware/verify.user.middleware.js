@@ -30,7 +30,9 @@ exports.createSecretPassword = async (req, res, next) => {
     }
     //   let user = {}
     if (req.body.mobile) {
+      console.log(req.body);
       let user = await User_Login_Schema.findOne({ mobile: req.body.mobile });
+      console.log(user);
       if (user)
         return res
           .status(400)

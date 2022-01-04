@@ -15,7 +15,7 @@ const imgs_path = path.join(__dirname + "../../../upload/profile");
 
 exports.create = async (req, res) => {
   try {
-    console.log("userCreate");
+    console.log("userCreate",req);
     let user = {};
     if (req.body.mobile) {
       // Create a new user
