@@ -297,7 +297,7 @@ exports.refer = async (req, res) => {
         return res.status(400).json({ error: "Internal Server Error" });
 
       let amount = referinr;
-      let remark = `reward for refer a user`;
+      let remark = `Reward For Entering Friend Code`;
       let addTransaction = await User_Transaction_Schema.create({
         users: userId.toString(),
         remark,
@@ -324,7 +324,7 @@ exports.refer = async (req, res) => {
         console.log(refercode);
         addTransaction = await User_Transaction_Schema.create({
           users: refercode._id.toString(),
-          remark,
+          remark: `Reward for refer a user`,
           amount,
         });
       }
