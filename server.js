@@ -174,7 +174,7 @@ app.get("/about", (req, res) => {
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ e });
+    res.status(500).json({ error: e });
   }
 });
 

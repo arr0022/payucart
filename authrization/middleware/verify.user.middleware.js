@@ -4,10 +4,10 @@ const User_Login_Schema = require("../../models/User_Login");
 const Admin_Login_Schema = require("../../models/Admin_Login");
 
 exports.hasUserValidCredentialFields = [
-  body("name", "name must have 3 character").isLength({ min: 3 }),
+  body("name", "name must have 3 character").isLength({ min: 1 }),
   body("mobile", "Enter a valid mobile").isLength({ min: 10, max: 10 }),
-  body("password", "Password must be atleast 7 characters").isLength({
-    min: 7,
+  body("password", "Password must be atleast 8 characters").isLength({
+    min: 8,
   }),
 ];
 
@@ -21,13 +21,13 @@ exports.hasAdminValidCredentialFields = [
 exports.createSecretPassword = async (req, res, next) => {
   try {
     console.log("createSecretPassword");
-    console.log(req);
+    // console.log(req);
     const errors = validationResult(req);
     let referCode = "refer".concat(
       Math.floor(Math.random() * 123456789 * 369).toString()
     );
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ error: "Please Enter Valid detail" });
     }
     //   let user = {}
     if (req.body.mobile) {
