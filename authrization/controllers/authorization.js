@@ -209,7 +209,7 @@ exports.getwallet = async (req, res) => {
     if (!userTransaction)
       return res
         .status(401)
-        .json({ userTransaction: "user doesn't have any ransaction" });
+        .json({ userTransaction: "user doesn't have any transaction" });
     // console.log(userTransaction);
     return res.status(200).json(userTransaction);
   } catch (error) {

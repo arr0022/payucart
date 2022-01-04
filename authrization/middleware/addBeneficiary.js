@@ -31,7 +31,6 @@ exports.authorize = (req, res, next) => {
       req.url = `${testUrl}/payout/v1/verifyToken`;
       req.token = response.data.data.token;
       return next();
-      // res.json({response: response.data})
     })
     .catch(function (error) {
       // console.error(e);
