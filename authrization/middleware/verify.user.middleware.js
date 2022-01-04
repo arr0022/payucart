@@ -36,7 +36,7 @@ exports.createSecretPassword = async (req, res, next) => {
       console.log(user);
       if (user)
         return res
-          .status(400)
+          .status(405)
           .json({ error: "Sorry a user with this Mobile is already exists" });
       let checkRef = await User_Login_Schema.findOne({ referCode });
       if (checkRef) {

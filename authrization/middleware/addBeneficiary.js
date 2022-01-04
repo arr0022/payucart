@@ -67,7 +67,7 @@ exports.validateBeneficiary = async (req, res, next) => {
   try {
     console.log("validateBeneficiary", req.body);
     const { _id } = req.user;
-    const id =  _id.toString();
+    const id = _id.toString();
     console.log(id);
     req.user.id = id;
     let beneficiary = await User_Beneficiary.findOne({ beneId: id });
@@ -183,9 +183,15 @@ exports.createBeneficiary = async (req, res) => {
       return res.status(200).json({ User_Beneficiary: beni });
     } else {
       console.log(response.data, "response.data");
-      return res
-        .status(400)
-        .json({ message: response.data.message });
+      let code = response.data.subCode;
+      console.log("response.data.subCode", response.data.subCode);
+      if (code !== 200) {
+        return res
+          .status(response.data.subCode)
+          .json({ message: response.data.message });
+      } else {
+        return res.status(400).json({ message: response.data.message });
+      }
     }
   } catch (error) {
     // console.log(err);
