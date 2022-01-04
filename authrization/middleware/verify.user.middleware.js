@@ -21,6 +21,7 @@ exports.hasAdminValidCredentialFields = [
 exports.createSecretPassword = async (req, res, next) => {
   try {
     console.log("createSecretPassword");
+    console.log(req);
     const errors = validationResult(req);
     let referCode = "refer".concat(
       Math.floor(Math.random() * 123456789 * 369).toString()
