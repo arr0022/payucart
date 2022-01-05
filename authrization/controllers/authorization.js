@@ -428,6 +428,7 @@ exports.editProfile = async (req, res) => {
 exports.reward = async (req, res) => {
   try {
     console.log(req.body);
+    const _id = req.body._id
     console.log("reward");
     let userId = await req.user.id;
     // console.log(req.user," and ")
@@ -507,7 +508,8 @@ exports.reward = async (req, res) => {
 
       });
       await newData.save()
-      // await videoModel.updateOne({_id:})
+      await videoModel.updateOne({_id},{$push:{watchVideo:[{userId,videoId:_id}]}});
+      console.log("save video");
       return res.status(200).json({
         success: true,
         message: "reward add in wallet successfully",
