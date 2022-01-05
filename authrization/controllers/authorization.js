@@ -504,7 +504,7 @@ exports.reward = async (req, res) => {
         video:"61d451a58b8a16eb684388fa"
 
       });
-      newData.save()
+      await newData.save()
       return res.status(200).json({
         success: true,
         message: "reward add in wallet successfully",
