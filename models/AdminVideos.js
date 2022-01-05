@@ -3,7 +3,8 @@ const videoSchema = new mogoose.Schema({
     AdminVideo : {
         type: String,
         required: [true,'this fields required'],
-    }
+    },
+    
     // ImageThumbnailVideo : {
     //     type: String,
     //     required: [true,'this fields required'],

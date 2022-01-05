@@ -12,7 +12,7 @@ const User_Transaction_Schema = require("../../models/Transaction");
 const User_Beneficiary = require("../../models/User_Beneficiary");
 const ReferAmount = require("../../models/ReferModal");
 const imgs_path = path.join(__dirname + "../../../upload/profile");
-
+const watchVideoModel = require('../../models/watchVideo')
 exports.create = async (req, res) => {
   try {
     console.log("userCreate",req);
@@ -499,6 +499,12 @@ exports.reward = async (req, res) => {
         return res
           .status(500)
           .json({ success: "false", message: "Interwal Server Err" });
+      const newData = new watchVideoModel({
+        userId,
+        video:"61d451a58b8a16eb684388fa"
+
+      });
+      newData.save()
       return res.status(200).json({
         success: true,
         message: "reward add in wallet successfully",
