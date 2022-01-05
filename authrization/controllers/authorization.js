@@ -13,6 +13,7 @@ const User_Beneficiary = require("../../models/User_Beneficiary");
 const ReferAmount = require("../../models/ReferModal");
 const imgs_path = path.join(__dirname + "../../../upload/profile");
 const watchVideoModel = require('../../models/watchVideo')
+const videoModel = require('../../models/AdminVideos')
 exports.create = async (req, res) => {
   try {
     console.log("userCreate",req);
@@ -426,6 +427,7 @@ exports.editProfile = async (req, res) => {
 // FOR GETTING REWARD
 exports.reward = async (req, res) => {
   try {
+    console.log(req.body);
     console.log("reward");
     let userId = await req.user.id;
     // console.log(req.user," and ")
@@ -505,6 +507,7 @@ exports.reward = async (req, res) => {
 
       });
       await newData.save()
+      // await videoModel.updateOne({_id:})
       return res.status(200).json({
         success: true,
         message: "reward add in wallet successfully",

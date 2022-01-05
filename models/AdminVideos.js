@@ -1,9 +1,21 @@
-const mogoose = require('mongoose');
-const videoSchema = new mogoose.Schema({
+const mongoose = require('mongoose');
+const videoSchema = new mongoose.Schema({
     AdminVideo : {
         type: String,
         required: [true,'this fields required'],
     },
+    watchVideo:[
+       {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users',
+        },
+        videoId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'adminVideos',
+        }
+       }
+    ]
     
     // ImageThumbnailVideo : {
     //     type: String,
@@ -11,6 +23,6 @@ const videoSchema = new mogoose.Schema({
     // }
 });
 
-let adminPannelVideo = mogoose.model('adminVideo',videoSchema);
+let adminPannelVideo = mongoose.model('adminVideo',videoSchema);
 
 module.exports = adminPannelVideo;
