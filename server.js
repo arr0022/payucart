@@ -38,7 +38,7 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
   try {
     // console.log(req);
     console.log("AFTER");
-    const pg =  new PaymentGateway({
+    const pg = new PaymentGateway({
       env: config.enviornment,
       apiVersion: "1.0.0",
       appId: process.env.PG_App_ID,
@@ -186,6 +186,7 @@ app.get("/app-ads.txt", (req, res) => {
     return res.status(500).json({ error });
   }
 });
+
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
@@ -242,7 +243,7 @@ cron.schedule("* * * * *", async () => {
   }
 });
 
-cron.schedule("5 5 0 * * *", async () => {
+cron.schedule("5 1 1 * * *", async () => {
   try {
     let user = await User_Login_Schema.find({ plan: { $gte: 1 } });
     user.map(async (x, n) => {
@@ -278,6 +279,19 @@ cron.schedule("5 5 0 * * *", async () => {
     return res.status(500).json({ error });
   }
 });
+
+// app.get("/downloadApk", function (req, res) {
+//   try {
+//     console.log("downloadApk");
+//     const file = fs.createWriteStream("AdsGrocy.apk`");
+//     const response = `${__dirname}/upload/AdsGrocy.apk`;
+//     console.log(">>>>>>>>>>>>>",file);
+//     response.pipe()
+//     res.status(200).download(file); // Set disposition and send it.
+//   } catch (error) {
+//     res.status(500).json({ error });
+//   }
+// });
 
 // app.get('/',(req,res)=>{
 //   res.send('welocme')
