@@ -139,7 +139,9 @@ exports.videoCreate = async (req, res) => {
 exports.findAdminVideo = async (req, res) => {
   try {
     console.log("findBannerImage");
-    let videos = await adminPannelVideo.find();
+    let userId =  req.user.id;
+    console.log("userId>>>>>",userId);
+    let videos = await adminPannelVideo.find({"watchVideo.userId":{$ne:userId}});
     if (videos) {
       // console.log(images);
       return res.status(200).json({ videos });
