@@ -53,7 +53,7 @@ router.delete("/banner/delete/:id", ValidateAdmin, fetchFromAdmin.ImageDelete);
 // ======================Admin Pannel Videos======================
 
 router.get("/AdminVideo", ValidateAdmin, fetchFromAdmin.findAdminVideo);
-router.get("/UserVideo",fetchuser, fetchFromAdmin.findAdminVideo);
+router.get("/UserVideo", fetchFromAdmin.findAdminVideo);
 router.post(
   "/AdminVideo",
   ValidateAdmin,
