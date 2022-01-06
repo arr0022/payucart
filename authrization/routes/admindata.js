@@ -50,17 +50,16 @@ router.get("/userBanners", fetchuser, fetchFromAdmin.findBannerImage);
 
 router.delete("/banner/delete/:id", ValidateAdmin, fetchFromAdmin.ImageDelete);
 
-// ======================Admin Pannel Videos======================
 
+// ======================Admin Pannel Videos======================
 router.get("/AdminVideo", ValidateAdmin, fetchFromAdmin.findAdminVideo);
-router.get("/UserVideo",fetchuser, fetchFromAdmin.findAdminVideo);
+router.get("/UserVideo",fetchuser, fetchFromAdmin.findUserVideo);
 router.post(
   "/AdminVideo",
   ValidateAdmin,
   uploadVideos.array("video"),
   fetchFromAdmin.videoCreate
 );
-
 router.delete("/AdminVideo/:id", ValidateAdmin, fetchFromAdmin.VideoDelete);
 
 // ======================Packages======================

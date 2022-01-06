@@ -138,7 +138,23 @@ exports.videoCreate = async (req, res) => {
 // banner image get---
 exports.findAdminVideo = async (req, res) => {
   try {
-    console.log("findBannerImage");
+    console.log("findAdminVideo");
+    // let userId =  req.user.id;
+    // console.log("userId>>>>>",userId);
+    let videos = await adminPannelVideo.find();
+    if (videos) {
+      // console.log(images);
+      return res.status(200).json({ videos });
+    }
+    return res.status(200).json({ videos: "Not Available" });
+  } catch (error) {
+    console.log("error>>>>>>>", error);
+    return res.status(500).json({ error });
+  }
+};
+exports.findUserVideo = async (req, res) => {
+  try {
+    console.log("findAdminVideo");
     let userId =  req.user.id;
     console.log("userId>>>>>",userId);
     let videos = await adminPannelVideo.find({"watchVideo.userId":{$ne:userId}});
