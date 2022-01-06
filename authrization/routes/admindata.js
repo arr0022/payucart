@@ -3,6 +3,7 @@ const router = express.Router();
 const ValidateAdmin = require("../middleware/validateAdmin");
 const fetchFromAdmin = require("../controllers/fetchFromAdmin");
 const upload = require("../../util/multer");
+const ValidFeilds = require("../middleware/verifyUserMiddleware");
 const uploadVideos = require("../../util/multerForVideo");
 const fetchuser = require("../middleware/fetchuser");
 const ReferAmount = require("../../models/ReferModal");
@@ -64,7 +65,7 @@ router.delete("/AdminVideo/:id", ValidateAdmin, fetchFromAdmin.VideoDelete);
 
 // ======================Packages======================
 // create package
-router.post("/createpackage", ValidateAdmin, fetchFromAdmin.createPackage);
+router.post("/createpackage", ValidateAdmin,ValidFeilds.hasValidPlanFeilds, fetchFromAdmin.createPackage);
 // get all packages
 
 router.get("/getpackages", fetchuser, fetchFromAdmin.getPackage);

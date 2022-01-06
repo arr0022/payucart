@@ -13,6 +13,7 @@ const serverKey = process.env.firebase_msg_key;
 const User_Transaction_Schema = require("../../models/Transaction");
 const adminPannelVideo = require("../../models/AdminVideos");
 const { resolveSoa } = require("dns");
+const { validationResult } = require("express-validator");
 
 // Fetch user Data for admin without pagination create
 // exports.fetchUserData = async (req, res) => {
@@ -155,9 +156,11 @@ exports.findAdminVideo = async (req, res) => {
 exports.findUserVideo = async (req, res) => {
   try {
     console.log("findAdminVideo");
-    let userId =  req.user.id;
-    console.log("userId>>>>>",userId);
-    let videos = await adminPannelVideo.find({"watchVideo.userId":{$ne:userId}});
+    let userId = req.user.id;
+    console.log("userId>>>>>", userId);
+    let videos = await adminPannelVideo.find({
+      "watchVideo.userId": { $ne: userId },
+    });
     if (videos) {
       // console.log(images);
       return res.status(200).json({ videos });
@@ -250,9 +253,29 @@ exports.ImageDelete = async (req, res) => {
 // create packages---
 exports.createPackage = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: "Please Enter All Feilds" });
+    }
     let payload = await req.body;
+    console.log(">>>>>>>>>>", payload);
+    let plan = parseInt(payload.plan);
+    let packagess = await Package.findOne({ plan });
+    if (packagess) {
+      console.log(">>>>>>>>>>", packagess);
+      return res.status(400).json({ error: "Plan Feild must be unique" });
+    }
     let commission = await percentage(payload, req, res);
+    console.log(commission);
     commission = Math.round(commission);
+    // console.log(commission);
+    if (commission <= 0 || commission > plan) {
+      return res.status(400).json({
+        error:
+          "Calculate Commission Must be greater than zero and less than plan value",
+      });
+    }
+
     let option = {
       plan: payload.plan,
       dailyAds: payload.dailyAds,
@@ -284,12 +307,23 @@ exports.getPackage = async (req, res) => {
 exports.packageDelete = async (req, res) => {
   try {
     let id = req.params.id;
-    let result = await Package.findOneAndRemove({ _id: id });
+    console.log("packageDelete");
+    let result = await Package.findOne({_id: id});
+    if(!result){
+      return res.status(400).json({ error: "Plan Not Found" });
+    }
+    let check = await User_Login_Schema.find({plan:result.plan})
+    console.log(check);
+    if(check){
+      return res.status(400).json({ error: "User Using this plan" });
+    }
+    result = await Package.findOneAndRemove({ _id: id });
 
     return res.status(200).json({
       message: "package deleted",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error });
   }
 };
@@ -638,11 +672,12 @@ exports.pushNotificationToAll = async (req, res) => {
   }
 };
 
-const percentage = async (payload, req, res) => {
+const percentage = (payload, req, res) => {
   try {
-    let comm = await payload.commission;
-    const plan = await payload.plan;
-    const commission = ((await plan) * comm) / 100;
+    let comm = payload.commission;
+    let plan = payload.plan;
+    let commission = plan * comm;
+    commission = commission / 100;
     return commission;
   } catch (error) {
     return res.status(500).json({ error });

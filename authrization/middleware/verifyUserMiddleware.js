@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, check } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const User_Login_Schema = require("../../models/User_Login");
 const Admin_Login_Schema = require("../../models/Admin_Login");
@@ -16,6 +16,24 @@ exports.hasAdminValidCredentialFields = [
   body("password", "Password must be atleast 7 characters").isLength({
     min: 7,
   }),
+];
+
+exports.hasValidPlanFeilds = [
+  check("plan")
+    .notEmpty()
+    .withMessage("All field is required"),
+  check("commission")
+    .notEmpty()
+    .withMessage("All field is required"),
+  check("dailyAds")
+    .notEmpty()
+    .withMessage("All field is required"),
+  check("expireIn")
+    .notEmpty()
+    .withMessage("All field is required"),
+  check("totalROI")
+    .notEmpty()
+    .withMessage("All field is required")
 ];
 
 exports.createSecretPassword = async (req, res, next) => {

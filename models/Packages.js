@@ -5,6 +5,7 @@ const PackageSchema = new Schema({
     plan:{
         type: Number,
         required: [true,'this fields required'],
+        unique: true,
     },
     dailyAds:{
         type: Number,
