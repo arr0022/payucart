@@ -190,7 +190,6 @@ app.get("/app-ads.txt", (req, res) => {
 // About term&condition URL
 app.get("/term&condition", async (req, res) => {
   try {
-    // return res.redirect("http://www.adsgrocy.com/TermAndCondition");
     return res.redirect(`${process.env.base}/TermAndCondition`);
     // console.log(response.data);
   } catch (error) {
