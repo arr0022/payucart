@@ -95,13 +95,14 @@ app.post("/payments/:orderId/:_id", async (req, res) => {
       });
     } else if (response.txStatus === "FAILED") {
       console.log("failed");
-      return res.status(200).render("failed");
+      return res.status(400).render("failed");
+    } else {
+      return res.status(499).render("failed");
     }
-    return res.status(200).render("failed");
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(200).render("failed");
+    return res.status(500).render("failed");
   }
 });
 
@@ -156,13 +157,13 @@ app.post("/wallet/:orderId/:_id", async (req, res) => {
         });
     } else if (response.txStatus === "FAILED") {
       console.log("failed");
-      return res.status(200).render("failed");
+      return res.status(400).render("failed");
     }
-    return res.status(200).render("failed");
+    return res.status(499).render("failed");
     // console.log(response.data);
   } catch (error) {
     console.error(error);
-    return res.status(200).render("failed");
+    return res.status(500).render("failed");
     // res.status(400).json({ error: error.message });
   }
 });
@@ -197,6 +198,7 @@ app.get("/term&condition", async (req, res) => {
     return res.status(500).json({ error });
   }
 });
+
 
 // About privacy URL
 app.get("/privacy", async (req, res) => {
